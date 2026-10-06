@@ -1,0 +1,217 @@
+% MACRO I (ECO387C), Fall 2026 - mock midterm, exam only (answer space after
+% every part, one question per page start). Solutions: mock-midterm-solutions.tex.
+% Author: Philip Livdan. Four questions, each broken into lettered parts:
+% Q1 stochastic endowment economy (PSet 6 with CRRA gamma=2 and asymmetric
+% persistence), Q2 anticipated income rise in a two-type endowment economy
+% (Lecture 2, textbook Sec 5.2.1 Arrow-Debreu prices), Q3 growth model by
+% dynamic programming (textbook Examples 4.1, 4.5-4.8, Lecture 3), Q4
+% consumption (textbook Sec 9.3.2-9.3.3, Lecture 4).
+% Every number is checked in mock-midterm-checks.py (-checks.txt).
+% Font gotchas: 12pt only, no math in \section*, \mathbf not \boldsymbol.
+\documentclass[12pt]{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{needspace}
+\DeclareMathSizes{12}{12}{8}{7}
+\DeclareMathSizes{11}{11}{8}{7}
+\DeclareMathSizes{10}{10}{8}{7}
+\renewcommand{\ttdefault}{lmr}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5\baselineskip}
+\allowdisplaybreaks
+\setlength{\emergencystretch}{3em}
+\newcommand{\E}{E}
+\newcommand{\gap}[1]{\par\vspace{#1}}
+\newcommand{\qp}[2]{\par\medskip\textbf{(#1)} (#2 points)\ }
+% solution macros
+\newcommand{\ask}[1]{\par\textit{What is being asked.} #1\par}
+\newcommand{\idea}[1]{\par\textit{The idea.} #1\par}
+\newcommand{\pk}[1]{\par{\small\textit{[Packet: #1]}}\par}
+\newcommand{\stp}[1]{\par\textbf{Step #1.}\ }
+\newcommand{\ans}[1]{\[\boxed{\ #1\ }\]}
+\newcommand{\trap}[1]{\par\textit{Watch out.} #1\par}
+\newcommand{\sol}[1]{\par\bigskip\textbf{Part #1}\par}
+
+\begin{document}
+
+% ================================ EXAM ================================
+\begin{center}
+{\large\bfseries Macroeconomics I (ECO387C) Midterm Exam (Mock)}\\[1mm]
+Fall 2026
+\end{center}
+
+Name: \rule{3in}{0.4pt}
+
+\textbf{Instructions.} Closed book, no notes. Answer all four questions.
+Show your derivations, since most of the credit is for the steps. Where a
+number is asked for, leave it as a fraction or simple expression if you have
+no calculator. Total 100 points, about 2 hours. Write your answers in the space below each part and continue on the back if needed.
+
+% ---------------------------------------------------------------- Q1
+\textbf{Question 1. A stochastic endowment economy} (25 points)
+
+A continuum of identical households maximizes
+$\E_0\sum_{t=0}^\infty\beta^t\frac{c_t^{1-\gamma}}{1-\gamma}$, $0<\beta<1$,
+$\gamma>0$. Households trade a riskless one-period bond. Buying $a_{t+1}$
+units at $t$ pays $R_ta_{t+1}$ units of goods at $t+1$, where $R_t$ is the
+gross rate set at $t$. Bonds are in zero net supply. Every household
+receives the same endowment $y_t\in\{y_h,y_l\}$ with $y_h>y_l>0$. The
+endowment follows a Markov chain. From $y_h$ it stays at $y_h$ with
+probability $p_h$, and from $y_l$ it stays at $y_l$ with probability $p_l$.
+
+\needspace{6.0cm}
+\qp{a}{2} Write the household's flow budget constraint.
+\gap{3.5cm}
+\needspace{7.0cm}
+\qp{b}{3} What are the state variables of the household problem? Explain
+why the current endowment is a state even though it is exogenous.
+\gap{4.5cm}
+\needspace{7.0cm}
+\qp{c}{3} Write the Bellman equation, with the expectation written out as
+a sum over next period's states.
+\gap{4.5cm}
+\needspace{10.0cm}
+\qp{d}{5} Derive the Euler equation from the Bellman equation. Label the
+first-order condition and the envelope condition.
+\gap{7.5cm}
+\needspace{8.5cm}
+\qp{e}{4} State the market-clearing conditions. Use them to show that in
+equilibrium $a_{t+1}=0$ and $c_t=y_t$, and give a formula for the
+equilibrium gross rate $R(y)$.
+\gap{6.0cm}
+\needspace{8.5cm}
+\qp{f}{4} Let $\gamma=2$, $y_h=2$, $y_l=1$. Find $R_h$ and $R_l$ as
+functions of $\beta$, $p_h$, $p_l$. Evaluate them at $\beta=0.95$,
+$p_h=0.8$, $p_l=0.6$ and compare with $1/\beta$.
+\gap{6.0cm}
+\needspace{8.5cm}
+\qp{g}{4} With the same numbers, the log case ($\gamma=1$) gives
+$R_h=0.877$ and $R_l=1.316$. Explain why the rates are further from
+$1/\beta$ when $\gamma=2$. Then suppose the endowment is iid, $p_h=1-p_l$.
+Show that $R_l/R_h$ no longer depends on the probabilities and find it.
+
+\gap{6.0cm}
+% ---------------------------------------------------------------- Q2
+\newpage
+\textbf{Question 2. An anticipated income rise} (25 points)
+
+Time is $t=0,1,2,\dots$. There are two household types, $A$ and $B$, each
+of mass one, with preferences $\sum_{t=0}^\infty\beta^t\ln c^e_t$ for
+$e\in\{A,B\}$. Type $A$ receives $y^A_t=1$ every period. Type $B$ receives
+$y^B_0=1$ and $y^B_t=2$ for all $t\ge1$. Everybody knows this at $t=0$.
+Households trade one-period real bonds: $c^e_t+b^e_t=y^e_t+(1+r_{t-1})b^e_{t-1}$
+with $b^e_{-1}=0$.
+
+\needspace{8.5cm}
+\qp{a}{4} State the household problem, including the no-Ponzi-game
+condition, and define a sequential competitive equilibrium.
+\gap{6.0cm}
+\needspace{8.5cm}
+\qp{b}{4} Derive the Euler equation and the intertemporal budget
+constraint. In the intertemporal budget constraint, write
+$q_t:=1/\prod_{\tau=0}^{t-1}(1+r_\tau)$.
+\gap{6.0cm}
+\needspace{8.5cm}
+\qp{c}{4} Show that $1+r_t=\frac1\beta\frac{Y_{t+1}}{Y_t}$ with
+$Y_t:=y^A_t+y^B_t$. Find $r_0$ and $r_t$ for $t\ge1$, and the prices $q_t$.
+Explain why $r_0$ is high.
+\gap{6.0cm}
+\needspace{11.5cm}
+\qp{d}{6} Solve for $c^A_t$ and $c^B_t$ for all $t$. Verify that the
+goods market clears.
+\gap{9.0cm}
+\needspace{8.5cm}
+\qp{e}{4} Find $b^A_0$ and $b^A_t$ for $t\ge1$. Who borrows at $t=0$,
+and why? Check that $A$'s bond path satisfies the no-Ponzi-game
+condition.
+\gap{6.0cm}
+\needspace{7.0cm}
+\qp{f}{3} In the Arrow-Debreu version of this economy (textbook
+Section 5.2.1), the price of date-$t$ goods in units of date-0 goods is
+$p_t=\beta^tY_0/Y_t$. Show that $p_t=q_t$ and explain in one sentence why
+the two market structures give the same allocation.
+
+\gap{4.5cm}
+% ---------------------------------------------------------------- Q3
+\newpage
+\textbf{Question 3. Growth by dynamic programming} (25 points)
+
+A planner maximizes $\sum_{t=0}^\infty\beta^t\ln c_t$ subject to
+$c_t+k_{t+1}=Ak_t^\alpha$, $k_{t+1}\ge0$, $k_0>0$ given, with
+$0<\alpha<1$, $0<\beta<1$, $A>0$ (full depreciation).
+
+\needspace{7.0cm}
+\qp{a}{3} Write the problem in the form
+$\max\sum\beta^tF(k_t,k_{t+1})$ with $k_{t+1}\in\Gamma(k_t)$. Give $F$ and
+$\Gamma$, and write the Bellman equation.
+\gap{4.5cm}
+\needspace{10.0cm}
+\qp{b}{5} Let $T$ be the Bellman operator. State Blackwell's sufficient
+conditions and verify both for $T$. What does Banach's fixed-point theorem
+then deliver? Why is some care needed with log utility?
+\gap{7.5cm}
+\needspace{10.0cm}
+\qp{c}{5} Start value function iteration from $V_0\equiv0$. Find $V_1$
+and its policy. Then find the policy that maximizes the right-hand side
+when computing $V_2$, and interpret it as a decision in a finite-horizon
+problem.
+\gap{7.5cm}
+\needspace{11.5cm}
+\qp{d}{6} Derive the functional Euler equation using the first-order and
+envelope conditions. Guess $g(k)=sAk^\alpha$ and solve for $s$.
+\gap{9.0cm}
+\needspace{7.0cm}
+\qp{e}{3} Find the steady state $k^*$ and evaluate it at $\alpha=0.3$,
+$\beta=0.95$, $A=1$.
+\gap{4.5cm}
+\needspace{7.0cm}
+\qp{f}{3} Write the policy in log deviations
+$\hat k_t:=\ln k_t-\ln k^*$. If $k_0=k^*/2$, what is $\hat k_1$? How many
+periods does it take to close half of the gap?
+
+\gap{4.5cm}
+% ---------------------------------------------------------------- Q4
+\newpage
+\textbf{Question 4. Consumption} (25 points)
+
+A household maximizes $\E_0\sum_{t=0}^\infty\beta^tu(c_t)$ subject to
+$a_{t+1}=(1+r)(a_t+y_t-c_t)$ and a no-Ponzi-game condition, with
+$\beta(1+r)=1$ and $r>0$. Income $y_t$ is stochastic.
+
+\needspace{7.0cm}
+\qp{a}{3} Let $u(c)=b_1c-\frac12b_2c^2$. Show that $c_t=\E_tc_{t+1}$.
+\gap{4.5cm}
+\needspace{10.0cm}
+\qp{b}{5} Iterate the budget constraint forward and use part (a) to show
+\[
+c_t=\frac{r}{1+r}\Big[a_t+\sum_{j=0}^\infty\Big(\frac{1}{1+r}\Big)^j\E_ty_{t+j}\Big].
+\]
+\gap{7.5cm}
+\needspace{11.5cm}
+\qp{c}{6} Let $y_t-\bar y=\rho(y_{t-1}-\bar y)+\varepsilon_t$ with
+$0\le\rho\le1$ and $\varepsilon_t$ white noise. Show that
+$\Delta c_t=\frac{r}{1+r-\rho}\varepsilon_t$. Evaluate the coefficient at
+$r=0.04$ for $\rho=0$, $0.9$, $1$ and interpret.
+\gap{9.0cm}
+\needspace{7.0cm}
+\qp{d}{3} Hall (1978) regresses $\Delta c_{t+1}$ (or $\Delta\ln c_{t+1}$)
+on variables known at $t$. What does the model predict for the coefficient
+and why? What did Johnson, Parker and Souleles (2006) find?
+\gap{4.5cm}
+\needspace{10.0cm}
+\qp{e}{5} Now add the borrowing constraint $a_{t+1}\ge0$ and let income be
+iid with mean $\bar y=1$, so $\rho=0$. At $a_t=0$ the household draws
+$y_t=0.5$, with $r=0.04$. Compute the consumption the unconstrained rule
+from (b) prescribes, and show that it violates the constraint. Write the
+Euler equation with the constraint's multiplier, and give consumption and
+the marginal propensity to consume at this point.
+\gap{7.5cm}
+\needspace{7.0cm}
+\qp{f}{3} Replace quadratic utility by CRRA. Explain, using a
+second-order expansion or a picture, why the household now saves more
+when income risk rises, even with no borrowing constraint.
+
+
+\gap{4.5cm}
+
+\end{document}

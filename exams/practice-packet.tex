@@ -1,0 +1,1053 @@
+% MACRO I (ECO387C), Fall 2026 - midterm study packet. Author: Philip Livdan.
+% Walks through the class material in lecture order (Lectures 1-4, Discussions
+% 1-6, PSets 1-6): every model is set up from scratch and every result derived
+% in numbered steps with all algebra displayed, then worked problems follow.
+% Every number is checked in practice-packet-checks.py (output in
+% practice-packet-checks.txt). Rerun it before changing any number.
+% Font gotchas (offline tectonic cache): 12pt only, no math in \section*,
+% \mathbf not \boldsymbol, no \widehat in exponents, no monospace.
+\documentclass[12pt]{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\DeclareMathSizes{12}{12}{8}{7}
+\DeclareMathSizes{11}{11}{8}{7}
+\DeclareMathSizes{10}{10}{8}{7}
+\renewcommand{\ttdefault}{lmr}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5\baselineskip}
+\newcommand{\E}{E}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+\newcommand{\st}[1]{\par\smallskip\textbf{Step #1.}\ }
+\newcommand{\given}[1]{\textit{Given.} #1\par}
+\newcommand{\uses}[1]{\textit{Uses.} #1\par}
+\newcommand{\goal}[1]{\textit{Goal.} #1\par}
+\newcommand{\ans}[1]{\[\boxed{\ #1\ }\]}
+\newcommand{\prob}[1]{\par\bigskip\textbf{Worked problem #1.}\ }
+\newcommand{\sol}{\par\smallskip\textbf{Solution.}\par}
+\newcommand{\src}[1]{\par{\small\textit{Source in class.} #1}\par}
+
+\title{Midterm Study Packet\\[1mm] \large Macroeconomics I (ECO387C), Fall 2026}
+\author{Philip Livdan}
+\date{October 6, 2026}
+
+\begin{document}
+\maketitle
+
+This packet rebuilds the course from the ground up in the order it was taught.
+Each part has three layers. \textbf{Setup} writes down the environment exactly
+as in lecture (who, what is chosen, what is given, the constraints).
+\textbf{Derivation} gets every result in numbered steps, each saying what is
+done and why, with every line of algebra displayed. \textbf{Worked problems}
+apply the derivation to exam-style questions. Cover the solution, attempt the
+problem, then check line by line. The exam is closed book, so the boxed results
+are the things to know cold.
+
+Parts: 0 toolkit, 1 what macro is (Lecture 1), 2 national accounts
+(Discussion 1), 3 the endowment economy (Lecture 2, Discussion 2, PSet 2),
+4 infinite horizon and uncertainty (Lecture 2, PSets 3 and 6),
+5 log-linearization and time averaging (Discussion 3, PSet 3),
+6 dynamic programming (Lecture 3, Discussion 4, PSets 3--4),
+7 numerical dynamic programming (Discussions 5--6, PSets 4--5),
+8 consumption (Lecture 4).
+
+\tableofcontents
+\newpage
+
+% ======================================================================
+\section*{Part 0. Toolkit}
+\addcontentsline{toc}{section}{Part 0. Toolkit}
+
+These five tools are used over and over. Know them before anything else.
+
+\textbf{T1. Lagrangian recipe with inequality constraints (KKT).}
+To maximize $f(x)$ subject to $g_i(x)\ge0$:
+\begin{enumerate}
+\item Write $\mathcal L=f(x)+\sum_i\lambda_i g_i(x)$, one multiplier per constraint.
+\item First-order conditions $\partial\mathcal L/\partial x_j=0$ for every choice variable.
+\item Constraints hold, $g_i(x)\ge0$.
+\item Complementary slackness, $\lambda_i g_i(x)=0$. Either the constraint binds or its multiplier is zero.
+\item Non-negativity, $\lambda_i\ge0$.
+\end{enumerate}
+The multiplier is the marginal value of relaxing the constraint. For a budget
+constraint its unit is utils per unit of goods.
+
+\textbf{T2. Geometric sums.} For $|x|<1$,
+\[
+\sum_{j=0}^{\infty}x^j=\frac{1}{1-x},\qquad
+\sum_{j=0}^{T}x^j=\frac{1-x^{T+1}}{1-x},\qquad
+\sum_{\substack{t=0\\t\text{ even}}}^{T}x^{t}=\sum_{s=0}^{(T-1)/2}(x^2)^s=\frac{1-x^{T+1}}{1-x^2}\ \ (T\text{ odd}).
+\]
+The most used special case is
+\[
+\sum_{j=0}^{\infty}\frac{1}{(1+r)^j}=\frac{1}{1-\frac{1}{1+r}}=\frac{1+r}{(1+r)-1}=\frac{1+r}{r}.
+\]
+
+\textbf{T3. Envelope theorem.} If $V(x)=\max_{y}G(x,y)$ with maximizer $y=g(x)$, then
+\[
+V'(x)=\frac{d}{dx}G\big(x,g(x)\big)=G_x\big(x,g(x)\big)+\underbrace{G_y\big(x,g(x)\big)}_{=0\text{ by the FOC}}g'(x)=G_x\big(x,g(x)\big).
+\]
+Only the direct effect of the state survives. The indirect effect through the
+choice is zero because the choice was already optimal.
+
+\textbf{T4. Taylor expansions.} First order around $\bar x$:
+$f(x)\approx f(\bar x)+f'(\bar x)(x-\bar x)$. Second order adds
+$\tfrac12f''(\bar x)(x-\bar x)^2$. Also $\ln(1+z)\approx z$ for small $z$, so
+$\ln x-\ln\bar x=\ln\big(1+\tfrac{x-\bar x}{\bar x}\big)\approx\tfrac{x-\bar x}{\bar x}$.
+
+\textbf{T5. CRRA algebra.} Course notation (Lecture 4) is
+$u(c)=\dfrac{c^{1-1/\sigma}}{1-1/\sigma}$ with $\sigma$ the intertemporal
+elasticity of substitution (IES). Psets write $u(c)=\dfrac{c^{1-\gamma}}{1-\gamma}$,
+so $\gamma=1/\sigma$ is relative risk aversion. Derivatives:
+\[
+u'(c)=c^{-\gamma},\qquad u''(c)=-\gamma c^{-\gamma-1},\qquad u'''(c)=\gamma(\gamma+1)c^{-\gamma-2}.
+\]
+Relative risk aversion and relative prudence are
+\[
+-\frac{u''(c)c}{u'(c)}=\frac{\gamma c^{-\gamma-1}c}{c^{-\gamma}}=\gamma,\qquad
+-\frac{u'''(c)c}{u''(c)}=\frac{\gamma(\gamma+1)c^{-\gamma-2}c}{\gamma c^{-\gamma-1}}=\gamma+1 .
+\]
+Log utility is the case $\gamma=\sigma=1$.
+
+% ======================================================================
+\section*{Part 1. What macroeconomics is (Lecture 1)}
+\addcontentsline{toc}{section}{Part 1. What macroeconomics is}
+
+\textbf{Four defining features.}
+\begin{enumerate}
+\item \emph{Aggregates.} $C_t=\sum_ic_{it}$, $Y_t=\sum_iy_{it}$. We model individuals and add them up.
+\item \emph{General equilibrium.} Prices are determined inside the model by market clearing, not taken from outside.
+\item \emph{Dynamics.} Decisions today depend on the future (saving, investment), so time is explicit.
+\item \emph{Quantitative.} Models are calibrated or estimated and asked for numbers, not just signs.
+\end{enumerate}
+Core fields are business cycles (with monetary and fiscal policy) and growth.
+Applied fields include macro labor, structural change, inequality, and climate.
+Adjacent fields are international trade and finance, macro-finance, and
+macro-development.
+
+\textbf{History in one line per era.}
+\begin{itemize}
+\item Classical economics, then the Great Depression and Keynes (aggregate demand). National accounts are built (Part 2).
+\item 1940s--60s Keynesian consensus. Hicks's IS-LM in $(r,Y)$, Okun's law (GDP down 2\% goes with unemployment up 1 point), the Phillips curve as a ``menu'' of inflation--unemployment pairs.
+\item 1960s--70s monetarism. Friedman and Phelps argue the long-run Phillips curve is vertical. The 1970s oil shocks bring high inflation and high unemployment together, which the menu cannot explain.
+\item 1970s--90s new classical economics. Lucas critique and rational expectations, then Kydland and Prescott (1982) and real business cycle (RBC) models. Saltwater versus freshwater schools.
+\item 1990s to today. New Keynesian models (Gal\'i, Woodford) add sticky prices to the RBC core, so monetary policy has real effects. Empirical side uses VARs (Sims, Sargent), $\mathbf Y_t=\alpha+B\mathbf Y_{t-1}+u_t$, and microeconometric methods.
+\end{itemize}
+
+\textbf{The Lucas critique, step by step.}
+\st{1} A reduced-form regression of output on taxes is estimated from past data,
+$Y_t=\alpha+\delta T_t+\varepsilon_t$, and used for a policy counterfactual.
+\st{2} But taxes are set by a policy rule, $T_t=\tau Y_t$, and agents optimize
+knowing the rule. So the coefficient is itself a function of the rule,
+\[
+Y_t=\alpha+\delta(\tau)\,T_t(\tau)+\varepsilon_t .
+\]
+\st{3} Changing the policy from $\tau$ to $\tau'$ changes $\delta(\tau)$ to
+$\delta(\tau')$. A counterfactual that keeps the old $\hat\delta$ is
+conceptually wrong.
+\st{4} The remedy is to model the optimization problems (preferences,
+technology, constraints) whose parameters do not move with policy. This is why
+the rest of the course starts from household and planner problems.
+
+% ======================================================================
+\section*{Part 2. National accounts (Discussion 1)}
+\addcontentsline{toc}{section}{Part 2. National accounts}
+
+\textbf{Definition.} GDP is the market value of all \emph{final} goods and
+services produced within a country in a given period. Factors of production are
+long-lived inputs (labor, mines, machines). Intermediate goods are used up in
+later stages (ore, steel). Final goods are not used up in later production
+within the period (autos, new machines).
+
+\textbf{Three equivalent approaches.}
+\begin{enumerate}
+\item \emph{Production.} $\text{GDP}=\sum_{\text{stages}}\big[\text{value of the stage's output}-\text{value of intermediates used}\big]$. Output includes unsold output (inventory). Adding gross output at every stage would double count intermediates.
+\item \emph{Expenditure.} $Y_t=C_t+I_t+G_t+NX_t$. $C$ is household spending (durables, nondurables, services, about two-thirds of US GDP). $I$ is fixed investment (non-residential structures, equipment, intellectual property, plus residential housing) plus inventory investment. $G$ is government \emph{purchases} only (transfers and interest on debt are excluded). $NX$ is exports minus imports.
+\item \emph{Income.} GDP is the sum of payments to factors plus indirect taxes. National income (compensation, proprietors' income, rental income, corporate profits, net interest) relates to GDP by $NI_t=GDP_t+NFP_t-D_t-NIT_t$.
+\end{enumerate}
+
+\textbf{Identities.}
+\begin{align*}
+\text{(A) expenditure}\quad & Y_t=C_t+I_t+G_t+NX_t\\
+\text{(B) household}\quad & Y_t+TR_t+NFP_t+NTR_t=C_t+T_t+S_t\\
+\text{(C) government}\quad & T_t+\dot M_t+\dot B^G_t=G_t+TR_t\\
+\text{(D) balance of payments}\quad & X_t+NFP_t+NTR_t+CF_t=IM_t
+\end{align*}
+
+\textbf{Derivation of the saving--investment identity (E).}
+\st{1} Start from (B) and replace $Y_t$ using (A):
+\[
+C_t+T_t+S_t=C_t+I_t+G_t+X_t-IM_t+TR_t+NFP_t+NTR_t .
+\]
+\st{2} Cancel $C_t$ on both sides:
+\[
+T_t+S_t=I_t+G_t+X_t-IM_t+TR_t+NFP_t+NTR_t .
+\]
+\st{3} From (D), $X_t+NFP_t+NTR_t-IM_t=-CF_t$. Substitute:
+\[
+T_t+S_t=I_t+G_t-CF_t+TR_t .
+\]
+\st{4} Solve for investment:
+\ans{I_t=S_t+\underbrace{(T_t-G_t-TR_t)}_{\text{government surplus}}+CF_t}
+Investment is financed by private saving, public saving, or foreign capital. In
+a closed economy without government, $T=G=TR=CF=0$ and $Y_t=C_t+S_t$, so
+$S_t=I_t$.
+
+\textbf{CPI.} Inflation $\pi_{t+1}=(P_{t+1}-P_t)/P_t$ with $P_t$ the cost of a
+fixed basket relative to the base year. Two biases make the CPI overstate
+cost-of-living growth. Quality bias counts quality improvements as price
+increases. Substitution bias ignores that consumers switch away from goods
+that became relatively expensive.
+
+\prob{1 (three approaches).} A mine produces ore worth 100, paying wages 60.
+A mill turns all the ore into steel worth 250, paying wages 100. A factory turns
+all the steel into autos worth 500, paying wages 150. Households buy autos
+worth 400, the rest stay in the factory's inventory. Compute GDP all three ways.
+\sol
+\st{1 (production)} Value added at each stage is output minus intermediates.
+\[
+\underbrace{100-0}_{\text{mine}}+\underbrace{250-100}_{\text{mill}}+\underbrace{500-250}_{\text{factory}}=100+150+250=500 .
+\]
+\st{2 (expenditure)} Final goods are autos. Sold to households is $C=400$, unsold
+is inventory investment $I=100$.
+\[
+C+I=400+100=500 .
+\]
+\st{3 (income)} Profits are value added minus wages, $100-60=40$,
+$150-100=50$, $250-150=100$. Payments to factors:
+\[
+\underbrace{60+100+150}_{\text{wages }310}+\underbrace{40+50+100}_{\text{profits }190}=500 .
+\]
+\ans{\text{GDP}=500\text{ under all three approaches}}
+
+\prob{2 (classification).} Say what happens to US and French GDP components.
+(a) A French tourist buys and eats a hamburger in Ann Arbor. (b) A French firm
+buys a US-made machine and uses it in the US. (c) A car made in the US in
+November 2008 is sold to a US household in February 2009.
+\sol
+(a) US exports rise, so US $NX$ and $Y$ rise. French $C$ rises and French
+imports rise by the same amount, so French $Y$ is unchanged.
+(b) The machine is produced and installed in the US, so US $I$ and $Y$ rise.
+French accounts do not change because the investment is not on French soil.
+(c) In 2008 US $Y$ and $I$ (inventory) rise. In 2009 $C$ rises and inventory
+investment falls by the same amount, so 2009 $Y$ is unchanged.
+
+% ======================================================================
+\section*{Part 3. The endowment economy (Lecture 2, Discussion 2, PSet 2)}
+\addcontentsline{toc}{section}{Part 3. The endowment economy}
+
+\subsection*{3.1 Setup}
+\begin{itemize}
+\item Discrete time $t=0,1,\dots,T$ with $T$ odd. One perishable good.
+\item Two household types $e\in\{A,B\}$ with masses $n^A$, $n^B$. Endowments alternate:
+\[
+\begin{array}{c|cccccc}
+ & 0&1&2&3&\cdots&T\\\hline
+y^A_t&1&0&1&0&\cdots&0\\
+y^B_t&0&1&0&1&\cdots&1
+\end{array}
+\]
+\item Preferences $\sum_{t=0}^T\beta^t\ln c^e_t$ with $\beta\in(0,1)$, $\beta=1/(1+\rho)$, $\rho$ the rate of time preference.
+\item Households can save ($s^e_t>0$) or borrow ($s^e_t<0$) in nominal bonds at nominal rate $i_t$. Goods cost $p_t$.
+\end{itemize}
+PSet 2 writes the agent index as $\ell$ instead of $e$. Nothing else changes.
+
+\subsection*{3.2 From the nominal to the real budget constraint}
+\st{1} Nominal constraints (dollars):
+\[
+p_0c^e_0+s^e_0\le p_0y^e_0,\qquad p_tc^e_t+s^e_t\le p_ty^e_t+(1+i_{t-1})s^e_{t-1}\quad(t>0).
+\]
+\st{2} Divide period $t$ by $p_t$ (dollars over dollars per basket gives baskets)
+and define real bonds $b^e_t:=s^e_t/p_t$:
+\[
+c^e_t+b^e_t\le y^e_t+(1+i_{t-1})\frac{s^e_{t-1}}{p_t}
+=y^e_t+(1+i_{t-1})\frac{p_{t-1}}{p_t}\,\frac{s^e_{t-1}}{p_{t-1}}
+=y^e_t+(1+i_{t-1})\frac{p_{t-1}}{p_t}\,b^e_{t-1}.
+\]
+\st{3} Define inflation $1+\pi_t=p_t/p_{t-1}$ and the real rate
+\[
+1+r_{t-1}:=\frac{1+i_{t-1}}{1+\pi_t}\qquad\Longrightarrow\qquad i_t\approx r_t+\pi_{t+1}\quad\text{(Fisher equation).}
+\]
+\st{4} The real budget constraint is
+\ans{c^e_t+b^e_t\le y^e_t+(1+r_{t-1})\,b^e_{t-1},\qquad b^e_{-1}=0.}
+Only the real rate matters, because the household cares only about baskets.
+
+\subsection*{3.3 Why the budget constraint binds}
+Suppose at the optimum the constraint is slack at some date $\tilde t$. Then the
+household can raise $c_{\tilde t}$ to
+$c^{**}_{\tilde t}=y_{\tilde t}+(1+r_{\tilde t-1})b^*_{\tilde t-1}-b^*_{\tilde t}>c^*_{\tilde t}$
+keeping all other choices fixed. Since $u'>0$, utility rises by
+$\beta^{\tilde t}[u(c^{**}_{\tilde t})-u(c^*_{\tilde t})]>0$, contradicting
+optimality. So with strictly increasing utility every budget constraint holds with equality.
+
+\subsection*{3.4 No-Ponzi-game condition (finite horizon)}
+$b^e_T\ge0$. The household cannot die in debt. Without it, every household
+would borrow without limit in the last period.
+
+\subsection*{3.5 Household problem and equilibrium definition}
+Taking $\{r_t\}_{t=0}^{T-1}$ as given, household $e$ solves
+\[
+\max_{\{c^e_t,b^e_t\}_{t=0}^T}\sum_{t=0}^T\beta^t\ln c^e_t
+\quad\text{s.t.}\quad c^e_t+b^e_t\le y^e_t+(1+r_{t-1})b^e_{t-1},\quad b^e_{-1}=0,\quad b^e_T\ge0 .
+\]
+
+\textbf{Definition (competitive equilibrium).} Prices $\{r_t\}_{t=0}^{T-1}$ and
+allocations $\{c^A_t,c^B_t,b^A_t,b^B_t\}_{t=0}^T$ such that
+\begin{enumerate}
+\item taking $\{r_t\}$ as given, the allocations solve each household's problem,
+\item the goods market clears, $n^Ac^A_t+n^Bc^B_t=n^Ay^A_t+n^By^B_t$ for all $t$,
+\item the bond market clears, $n^Ab^A_t+n^Bb^B_t=0$ for all $t$.
+\end{enumerate}
+Write all three parts on the exam. Missing ``taking prices as given'' or one of
+the market-clearing conditions is the usual way to lose points.
+
+\subsection*{3.6 Solving the household problem}
+\st{1 (Lagrangian)} Current-value form, multiplier $\beta^t\lambda^e_t$ on each
+budget constraint and $\mu^e_T$ on $b^e_T\ge0$:
+\[
+\mathcal L^e=\sum_{t=0}^T\beta^t\Big[\ln c^e_t+\lambda^e_t\big(y^e_t+(1+r_{t-1})b^e_{t-1}-c^e_t-b^e_t\big)\Big]+\mu^e_Tb^e_T .
+\]
+The present-value multiplier is $\lambda^{e,PV}_t=\beta^t\lambda^e_t$.
+
+\st{2 (FOC for $c^e_t$)} $c_t$ appears only in the date-$t$ term:
+\[
+\frac{\partial\mathcal L^e}{\partial c^e_t}=\beta^t\Big(\frac{1}{c^e_t}-\lambda^e_t\Big)=0
+\quad\Longrightarrow\quad\frac{1}{c^e_t}=\lambda^e_t .\tag{1}
+\]
+\st{3 (FOC for $b^e_t$, $t<T$)} $b_t$ appears in the date-$t$ constraint with
+coefficient $-1$ and in the date-$(t+1)$ constraint with coefficient $(1+r_t)$:
+\[
+\frac{\partial\mathcal L^e}{\partial b^e_t}=-\beta^t\lambda^e_t+\beta^{t+1}\lambda^e_{t+1}(1+r_t)=0
+\quad\Longrightarrow\quad\lambda^e_t=\beta(1+r_t)\lambda^e_{t+1}.\tag{2}
+\]
+\st{4 (FOC for $b^e_T$)} $b_T$ appears in the last budget and in the no-Ponzi term:
+\[
+-\beta^T\lambda^e_T+\mu^e_T=0\quad\Longrightarrow\quad\mu^e_T=\beta^T\lambda^e_T .\tag{3}
+\]
+\st{5 (remaining KKT conditions)} Constraints (4) $y^e_t+(1+r_{t-1})b^e_{t-1}-c^e_t-b^e_t\ge0$
+and (5) $b^e_T\ge0$. Slackness (6) $\lambda^e_t(\cdots)=0$ and (7) $\mu^e_Tb^e_T=0$.
+Signs (8) $\lambda^e_t\ge0$ and (9) $\mu^e_T\ge0$.
+
+\st{6 (implications)} Log utility forces $c^e_t>0$, so by (1) $\lambda^e_t=1/c^e_t>0$.
+By (6) the budget binds:
+\[
+c^e_t+b^e_t=y^e_t+(1+r_{t-1})b^e_{t-1}.\tag{$*$}
+\]
+By (3), $\mu^e_T=\beta^T\lambda^e_T>0$, so by (7) $b^e_T=0$. This is the
+terminal (transversality) condition. Nobody leaves unspent savings either.
+
+\st{7 (Euler equation)} Substitute (1) into (2):
+\ans{\frac{1}{c^e_t}=\beta(1+r_t)\frac{1}{c^e_{t+1}}\qquad\Longleftrightarrow\qquad c^e_{t+1}=\beta(1+r_t)c^e_t .\tag{$**$}}
+The household problem is now two equations, $(*)$ and $(**)$, with two boundary
+conditions, $b^e_{-1}=0$ and $b^e_T=0$.
+
+\subsection*{3.7 The intertemporal budget constraint}
+\st{1} Define the price of date-$t$ goods in units of date-0 goods,
+$q_t:=1/\prod_{\tau=0}^{t-1}(1+r_\tau)$, with $q_0=1$. Note $q_{t+1}=q_t/(1+r_t)$.
+\st{2} Multiply $(*)$ at date $t$ by $q_t$:
+\[
+q_tc_t+q_tb_t=q_ty_t+q_t(1+r_{t-1})b_{t-1}=q_ty_t+q_{t-1}b_{t-1}.
+\]
+\st{3} Sum from $t=0$ to $T$. The bond terms telescope:
+\[
+\sum_{t=0}^Tq_tc_t+\sum_{t=0}^Tq_tb_t=\sum_{t=0}^Tq_ty_t+\sum_{t=0}^{T}q_{t-1}b_{t-1}
+\quad\Longrightarrow\quad
+\sum_{t=0}^Tq_tc_t+q_Tb_T=\sum_{t=0}^Tq_ty_t+q_0(1+r_{-1})b_{-1}.
+\]
+\st{4} Use $b_{-1}=0$ and $b_T=0$:
+\ans{\sum_{t=0}^T\frac{c^e_t}{\prod_{\tau=0}^{t-1}(1+r_\tau)}=\sum_{t=0}^T\frac{y^e_t}{\prod_{\tau=0}^{t-1}(1+r_\tau)}\qquad\text{lifetime consumption}=\text{lifetime income.}}
+
+\subsection*{3.8 The equilibrium interest rate}
+\st{1} Goods market clearing at $t$, then the Euler equation $c_t=c_{t+1}/[\beta(1+r_t)]$ for each type:
+\begin{align*}
+n^Ay^A_t+n^By^B_t&=n^Ac^A_t+n^Bc^B_t
+=n^A\frac{c^A_{t+1}}{\beta(1+r_t)}+n^B\frac{c^B_{t+1}}{\beta(1+r_t)}\\
+&=\frac{1}{\beta(1+r_t)}\big(n^Ac^A_{t+1}+n^Bc^B_{t+1}\big)
+=\frac{1}{\beta(1+r_t)}\big(n^Ay^A_{t+1}+n^By^B_{t+1}\big).
+\end{align*}
+The last step uses market clearing at $t+1$.
+\st{2} Solve for the rate:
+\ans{1+r_t=\frac{1}{\beta}\,\frac{Y_{t+1}}{Y_t},\qquad Y_t:=n^Ay^A_t+n^By^B_t .}
+This is the key general-equilibrium result. With log utility and a common
+$\beta$, the rate depends only on aggregate endowment growth.
+\st{3} In the alternating economy, $Y_t=n^A$ at even $t$ and $Y_t=n^B$ at odd $t$:
+\[
+1+r_t=\begin{cases}\dfrac1\beta\dfrac{n^B}{n^A}, & t\text{ even},\\[2ex]\dfrac1\beta\dfrac{n^A}{n^B}, & t\text{ odd}.\end{cases}
+\]
+The rate zigzags. When aggregate goods are scarce today relative to tomorrow,
+the rate is high, because everybody would like to borrow against tomorrow and
+the rate must rise until nobody does on net. With
+$n^A=n^B$ the rate is constant at $1/\beta$.
+
+\subsection*{3.9 Equilibrium allocations}
+\st{1} Set $n:=n^B/n^A$. Then $q_0=1$, $q_1=\beta/n$, $q_2=q_1/(1+r_1)=(\beta/n)(\beta n)=\beta^2$, and in general
+\[
+q_t=\beta^t\ \text{ at even }t,\qquad q_t=\beta^t/n\ \text{ at odd }t .
+\]
+\st{2} The Euler equation gives $c_{t+1}=\beta(1+r_t)c_t$, so $c_{t+1}=nc_t$ after an even date and $c_{t+1}=c_t/n$ after an odd date. Consumption alternates between $c_{ev}$ and $c_{od}=n\,c_{ev}$.
+\st{3} Value of the consumption stream:
+\[
+\sum_tq_tc_t=\sum_{t\text{ even}}\beta^tc_{ev}+\sum_{t\text{ odd}}\frac{\beta^t}{n}\,n c_{ev}=c_{ev}\sum_{t=0}^T\beta^t .
+\]
+\st{4} Value of endowments. Type $A$ gets 1 at even dates, type $B$ gets 1 at odd dates:
+\[
+\sum_tq_ty^A_t=\sum_{t\text{ even}}\beta^t,\qquad\sum_tq_ty^B_t=\frac1n\sum_{t\text{ odd}}\beta^t .
+\]
+\st{5} Use T2 with $T$ odd: $\sum_{t=0}^T\beta^t=\frac{1-\beta^{T+1}}{1-\beta}$, $\sum_{\text{even}}\beta^t=\frac{1-\beta^{T+1}}{1-\beta^2}$, $\sum_{\text{odd}}\beta^t=\beta\sum_{\text{even}}\beta^t$. Ratio
+\[
+\frac{\sum_{\text{even}}\beta^t}{\sum_{t}\beta^t}=\frac{1-\beta^{T+1}}{1-\beta^2}\cdot\frac{1-\beta}{1-\beta^{T+1}}=\frac{1-\beta}{(1-\beta)(1+\beta)}=\frac{1}{1+\beta}.
+\]
+\st{6} Set lifetime consumption equal to lifetime income for each type:
+\ans{c^A_{ev}=\frac{1}{1+\beta},\quad c^A_{od}=\frac{n}{1+\beta},\qquad c^B_{ev}=\frac{\beta}{n(1+\beta)},\quad c^B_{od}=\frac{\beta}{1+\beta}.}
+\st{7 (check)} Even dates: $n^A\frac{1}{1+\beta}+n^B\frac{\beta}{n(1+\beta)}=n^A\frac{1}{1+\beta}+n^A\frac{\beta}{1+\beta}=n^A=Y_{ev}$.
+Odd dates: $n^A\frac{n}{1+\beta}+n^B\frac{\beta}{1+\beta}=\frac{n^B}{1+\beta}+\frac{\beta n^B}{1+\beta}=n^B=Y_{od}$. Both markets clear.
+With $n^A=n^B$ ($n=1$) consumption is flat, $c^A=1/(1+\beta)$, $c^B=\beta/(1+\beta)$.
+Type $A$ consumes more because it receives its endowment first.
+
+\prob{3 (two-period economy, Discussion 2).} Two agents live for $t=1,2$ with
+$\ln c_1+\beta\ln c_2$ and budgets $c_1+b=y_1$, $c_2=y_2+(1+r)b$. Write
+$q:=1/(1+r)$. (a) Solve one household's problem. (b) Find the equilibrium $q$.
+(c) Solve for $\beta=0.9$, $y^A=(3,1)$, $y^B=(1,1)$.
+\sol
+\st{1 (combine budgets)} From the second budget, $b=q(c_2-y_2)$. Substitute into
+the first: $c_1+qc_2=y_1+qy_2$. The right side is wealth measured in date-1 goods.
+\st{2 (Lagrangian)} $\mathcal L=\ln c_1+\beta\ln c_2+\lambda\big(y_1+qy_2-c_1-qc_2\big)$.
+\[
+\frac{1}{c_1}=\lambda,\qquad\frac{\beta}{c_2}=\lambda q\quad\Longrightarrow\quad\frac{1}{c_1}=\frac{\beta}{q}\frac{1}{c_2}=\beta(1+r)\frac{1}{c_2},\qquad c_2=\frac{\beta}{q}c_1 .
+\]
+\st{3 (plug into the budget)}
+\[
+c_1+q\frac{\beta}{q}c_1=y_1+qy_2\ \Longrightarrow\ (1+\beta)c_1=y_1+qy_2 .
+\]
+\ans{c_1=\frac{y_1+qy_2}{1+\beta},\qquad c_2=\frac{\beta(y_1+qy_2)}{q(1+\beta)},\qquad b=y_1-c_1=\frac{\beta y_1-qy_2}{1+\beta}.}
+Check $b$: $y_1-\frac{y_1+qy_2}{1+\beta}=\frac{(1+\beta)y_1-y_1-qy_2}{1+\beta}=\frac{\beta y_1-qy_2}{1+\beta}$.
+\st{4 (equilibrium price)} Bond market clearing $b^A+b^B=0$:
+\[
+\frac{\beta y^A_1-qy^A_2}{1+\beta}+\frac{\beta y^B_1-qy^B_2}{1+\beta}=0\ \Longrightarrow\ \beta Y_1-qY_2=0
+\ \Longrightarrow\ \boxed{\ q=\beta\frac{Y_1}{Y_2},\qquad 1+r=\frac1\beta\frac{Y_2}{Y_1}\ }
+\]
+the two-period version of 3.8. With $Y_1=Y_2$, $1+r=1/\beta$.
+\st{5 (numbers)} $Y_1=3+1=4$, $Y_2=1+1=2$, so $q=0.9\cdot4/2=1.8$ and $1+r=1/1.8=0.5556$. The real rate is negative because aggregate goods fall.
+\begin{align*}
+c^A_1&=\frac{3+1.8\cdot1}{1.9}=\frac{4.8}{1.9}=2.5263, & c^A_2&=\frac{0.9}{1.8}\,2.5263=1.2632, & b^A&=3-2.5263=0.4737,\\
+c^B_1&=\frac{1+1.8\cdot1}{1.9}=\frac{2.8}{1.9}=1.4737, & c^B_2&=\frac{0.9}{1.8}\,1.4737=0.7368, & b^B&=1-1.4737=-0.4737.
+\end{align*}
+\st{6 (check)} $c^A_1+c^B_1=4=Y_1$, $c^A_2+c^B_2=2=Y_2$, $b^A+b^B=0$. Second budget for $A$:
+$1+b^A/q=1+0.4737/1.8=1.2632$. Correct.
+
+Discussion 2's special cases to remember. Endowments $(1,2)$ and $(2,1)$ give
+$Y_1=Y_2$, $q=\beta$, and perfect smoothing for both. Identical endowments
+$(1,1)$, $(1,1)$ give no trade. Endowments $(0,0)$ and $(2,2)$ also give no
+trade because the rich agent gains nothing from trading with an agent who has
+nothing to repay with.
+
+\prob{4 (unequal masses, PSet 2).} In the alternating economy with $n^A=1$,
+$n^B=2$, $\beta=0.9$, $T=7$, find $1+r_t$ and both consumption paths.
+\sol
+\st{1} $n=n^B/n^A=2$. Even $t$: $1+r_t=\frac{1}{0.9}\cdot2=2.2222$. Odd $t$: $1+r_t=\frac{1}{0.9}\cdot\frac12=0.5556$.
+\st{2} From 3.9: $c^A_{ev}=\frac{1}{1.9}=0.5263$, $c^A_{od}=\frac{2}{1.9}=1.0526$, $c^B_{ev}=\frac{0.9}{2\cdot1.9}=0.2368$, $c^B_{od}=\frac{0.9}{1.9}=0.4737$.
+\st{3 (check even date)} $1\cdot0.5263+2\cdot0.2368=1.0000=n^A$. Odd date: $1\cdot1.0526+2\cdot0.4737=2.0000=n^B$.
+
+% ======================================================================
+\section*{Part 4. Infinite horizon and uncertainty (Lecture 2, PSets 3 and 6)}
+\addcontentsline{toc}{section}{Part 4. Infinite horizon and uncertainty}
+
+\subsection*{4.1 Why we need a no-Ponzi condition}
+With $T\to\infty$ there is no last period, so $b_T\ge0$ is gone. Consider
+the scheme: borrow $x>0$ at $t=0$ and consume it, then each period roll over
+the debt plus interest:
+\[
+b_0=-x,\quad b_1=-x(1+r_0),\quad b_2=-x(1+r_0)(1+r_1),\quad\dots,\quad b_T=-x\prod_{\tau=0}^{T-1}(1+r_\tau).
+\]
+Consumption after date 0 is unaffected, so this is a free lunch of $x$. It is
+ruled out by the \textbf{no-Ponzi-game (NPG) condition}
+\ans{\lim_{T\to\infty}\frac{b_T}{\prod_{\tau=0}^{T-1}(1+r_\tau)}\ge0 .}
+In the scheme, $b_T/\prod(1+r_\tau)=-x<0$ for every $T$, so it is violated.
+
+\subsection*{4.2 The transversality condition implies NPG with equality}
+\st{1} The TVC is $\lim_{T\to\infty}\beta^T\lambda_Tb_T=0$. In words, at
+infinity the present value of asset holdings is zero.
+\st{2} Iterate the multiplier equation (2) backward, $\lambda_t=\lambda_{t-1}/[\beta(1+r_{t-1})]$:
+\[
+\lambda_t=\frac{\lambda_{t-1}}{\beta(1+r_{t-1})}=\frac{\lambda_{t-2}}{\beta^2(1+r_{t-1})(1+r_{t-2})}=\dots=\frac{\lambda_0}{\beta^t\prod_{\tau=0}^{t-1}(1+r_\tau)} .
+\]
+\st{3} Substitute into the TVC:
+\[
+0=\lim_{T\to\infty}\beta^T\frac{\lambda_0}{\beta^T\prod_{\tau=0}^{T-1}(1+r_\tau)}b_T=\lambda_0\lim_{T\to\infty}\frac{b_T}{\prod_{\tau=0}^{T-1}(1+r_\tau)} .
+\]
+\st{4} Divide by $\lambda_0=1/c_0>0$. The NPG condition holds with equality.
+NPG is a constraint (no borrowing schemes). TVC is an optimality condition (no
+wasted savings). Together they pin the limit to exactly zero.
+
+\subsection*{4.3 Uncertainty and the stochastic Euler equation}
+\st{1 (setup)} $y_t=\bar y+\varepsilon_t$ with $\varepsilon_t$ iid, mean zero. At date $t$ the household solves
+\[
+\max E_t\sum_{j=0}^\infty\beta^j\ln c_{t+j}\quad\text{s.t.}\quad c_{t+j}+b_{t+j}\le y_{t+j}+(1+r_{t+j-1})b_{t+j-1}\ \text{ and NPG.}
+\]
+\st{2 (Lagrangian)}
+$\mathcal L=E_t\sum_{j=0}^\infty\beta^j\big[\ln c_{t+j}+\lambda_{t+j}\big(y_{t+j}+(1+r_{t+j-1})b_{t+j-1}-c_{t+j}-b_{t+j}\big)\big]$.
+\st{3 (FOCs)} For $c_t$, known at $t$: $1/c_t=\lambda_t$. For $b_t$, which appears at $t$ and $t+1$:
+\[
+E_t\big[-\lambda_t+\beta(1+r_t)\lambda_{t+1}\big]=0\quad\Longrightarrow\quad\lambda_t=\beta(1+r_t)E_t[\lambda_{t+1}] .
+\]
+$r_t$ comes out of the expectation because the bond's return is known when it is bought (riskless bond).
+\st{4} Combine:
+\ans{\frac{1}{c_t}=\beta(1+r_t)\,E_t\Big[\frac{1}{c_{t+1}}\Big],\qquad E_t\Big[\frac{1}{c_{t+1}}\Big]=\int\frac{1}{c_{t+1}}g(\varepsilon_{t+1})\,d\varepsilon_{t+1}.}
+General utility: $u'(c_t)=\beta(1+r_t)E_t[u'(c_{t+1})]$.
+
+\subsection*{4.4 Pricing the bond when agents are identical (PSet 6)}
+\st{1} Bonds are in zero net supply, $\sum b=0$. With identical agents every
+agent holds the same amount, so $b_t=0$ for everyone.
+\st{2} Then the budget gives $c_t=y_t$. Nobody trades. The rate is whatever
+makes everybody content not to trade.
+\st{3} Put $c_t=y_t$ into the Euler equation:
+\ans{R_t=1+r_t=\frac{u'(y_t)}{\beta\,E_t[u'(y_{t+1})]} .}
+
+\prob{5 (iid endowment).} Identical agents with log utility. Endowment is iid,
+$y\in\{1,2\}$ with probability $\tfrac12$ each. Find $R$ in each state.
+\sol
+\st{1} $E[u'(y')]=\tfrac12\cdot\frac11+\tfrac12\cdot\frac12=\tfrac34$, the same in both states because $y$ is iid.
+\st{2} $R(2)=\dfrac{1/2}{\beta\cdot3/4}=\dfrac{2}{3\beta}$ and $R(1)=\dfrac{1/1}{\beta\cdot3/4}=\dfrac{4}{3\beta}$.
+\ans{R(y_h)=\frac{2}{3\beta}<\frac1\beta<R(y_l)=\frac{4}{3\beta}}
+In a boom agents want to save for the expected fall, which pushes the rate down.
+With $\beta=0.96$, $R(2)=0.6944$, $R(1)=1.3889$.
+
+\prob{6 (PSet 6, Markov endowment).} Same, but $y\in\{y_h,y_l\}=\{2,1\}$
+follows a Markov chain that stays in its state with probability $p$. Find $R_h$, $R_l$.
+\sol
+\st{1} In the high state: $E[u'(y')|y_h]=p\cdot\frac12+(1-p)\cdot1=\frac{p+2-2p}{2}=\frac{2-p}{2}$. So
+\[
+R_h=\frac{1/2}{\beta(2-p)/2}=\frac{1}{\beta(2-p)} .
+\]
+\st{2} In the low state: $E[u'(y')|y_l]=p\cdot1+(1-p)\cdot\frac12=\frac{2p+1-p}{2}=\frac{1+p}{2}$. So
+\[
+R_l=\frac{1}{\beta(1+p)/2}=\frac{2}{\beta(1+p)} .
+\]
+\ans{R_h=\frac{1}{\beta(2-p)},\qquad R_l=\frac{2}{\beta(1+p)}}
+For $p<1$, $2-p>1$ and $(1+p)/2<1$, so $R_h<1/\beta<R_l$. At $p=1$ both equal
+$1/\beta$ (no expected change). With $\beta=0.96$, $p=0.9$: $R_h=0.9470$, $R_l=1.0965$.
+Recursive form (PSet 6): state $(b,y)$ with $b=R_{t-1}a_t$, Bellman
+$V(b,y)=\max_{a'}\{u(b+y-a')+\beta E[V(R(y)a',y')|y]\}$. The current $y$ is both
+income and the forecaster of $y'$, which is why it is a state.
+
+% ======================================================================
+\section*{Part 5. Log-linearization and time averaging (Discussion 3, PSet 3)}
+\addcontentsline{toc}{section}{Part 5. Log-linearization and time averaging}
+
+\subsection*{5.1 Notation}
+$x_t$ is the series, $\bar x$ its trend or steady state, and
+$\hat x_t:=\frac{x_t-\bar x}{\bar x}\approx\ln x_t-\ln\bar x$ the percent
+deviation. So $x_t=\bar x(1+\hat x_t)\approx\bar xe^{\hat x_t}$.
+
+\subsection*{5.2 Three methods on $Y_t=A_tK_t^\alpha N_t^{1-\alpha}$}
+\textbf{Method 1 (substitute exponentials).}
+\st{1} Replace each variable by $\bar xe^{\hat x_t}$:
+$\bar Ye^{\hat Y_t}=\bar Ae^{\hat A_t}\,\bar K^\alpha e^{\alpha\hat K_t}\,\bar N^{1-\alpha}e^{(1-\alpha)\hat N_t}$.
+\st{2} The steady state satisfies $\bar Y=\bar A\bar K^\alpha\bar N^{1-\alpha}$. Divide it out:
+$e^{\hat Y_t}=e^{\hat A_t+\alpha\hat K_t+(1-\alpha)\hat N_t}$.
+\st{3} Take logs: $\hat Y_t=\hat A_t+\alpha\hat K_t+(1-\alpha)\hat N_t$.
+
+\textbf{Method 2 (first-order Taylor in levels).}
+\st{1} $Y_t\approx\bar Y+\frac{\partial Y}{\partial A}(A_t-\bar A)+\frac{\partial Y}{\partial K}(K_t-\bar K)+\frac{\partial Y}{\partial N}(N_t-\bar N)$
+with $\frac{\partial Y}{\partial A}=\frac{\bar Y}{\bar A}$, $\frac{\partial Y}{\partial K}=\alpha\frac{\bar Y}{\bar K}$, $\frac{\partial Y}{\partial N}=(1-\alpha)\frac{\bar Y}{\bar N}$ at the steady state.
+\st{2} Subtract $\bar Y$ and divide by $\bar Y$:
+$\frac{Y_t-\bar Y}{\bar Y}\approx\frac{A_t-\bar A}{\bar A}+\alpha\frac{K_t-\bar K}{\bar K}+(1-\alpha)\frac{N_t-\bar N}{\bar N}$, the same answer.
+
+\textbf{Method 3 (log then total differential).}
+\st{1} $\ln Y_t=\ln A_t+\alpha\ln K_t+(1-\alpha)\ln N_t$.
+\st{2} Differentiate: $\frac{dY_t}{Y_t}=\frac{dA_t}{A_t}+\alpha\frac{dK_t}{K_t}+(1-\alpha)\frac{dN_t}{N_t}$.
+\st{3} Evaluate at the steady state with $dx/\bar x=\hat x$. Same answer.
+Method 3 is the fastest on an exam.
+
+\subsection*{5.3 Six rules (PSet 3, Q3)}
+\begin{align*}
+&\text{(a) } y=cx: && \hat y=\hat x &&\text{exact}\\
+&\text{(b) } y=x^a: && \hat y=a\hat x &&\text{(first order)}\\
+&\text{(c) } y=xz: && \hat y=\hat x+\hat z\\
+&\text{(d) } y=x/z: && \hat y=\hat x-\hat z\\
+&\text{(e) } y=x+z: && \hat y=\tfrac{\bar x}{\bar y}\hat x+\tfrac{\bar z}{\bar y}\hat z &&\text{(weights are steady-state shares)}\\
+&\text{(f) } y=x-z: && \hat y=\tfrac{\bar x}{\bar y}\hat x-\tfrac{\bar z}{\bar y}\hat z
+\end{align*}
+Derivation of (e) by Method 3: $dy=dx+dz$. Divide by $\bar y$ and write
+$dx/\bar y=(\bar x/\bar y)(dx/\bar x)=(\bar x/\bar y)\hat x$.
+
+\prob{7 (three model equations).} Log-linearize (a) $Y_t=C_t+I_t$,
+(b) $K_{t+1}=(1-\delta)K_t+I_t$, (c) the CRRA Euler equation $C_t^{-\gamma}=\beta R\,C_{t+1}^{-\gamma}$ with $R$ constant.
+\sol
+(a) Rule (e): $\hat Y_t=\frac{\bar C}{\bar Y}\hat C_t+\frac{\bar I}{\bar Y}\hat I_t$.
+With $\bar C/\bar Y=0.8$, $\hat C=0.01$, $\hat I=-0.02$, the approximation gives $0.8(0.01)+0.2(-0.02)=0.0040$. With hats as percent
+deviations rule (e) is exact. Reading hats as log deviations
+($C=0.8e^{0.01}$, $I=0.2e^{-0.02}$) the exact value is $\ln(1.00408)=0.00407$.
+
+(b) Differentiate: $dK_{t+1}=(1-\delta)dK_t+dI_t$. Divide by $\bar K$:
+$\hat K_{t+1}=(1-\delta)\hat K_t+\frac{\bar I}{\bar K}\hat I_t$. In steady state $\bar I=\delta\bar K$, so $\bar I/\bar K=\delta$ and
+\ans{\hat K_{t+1}=(1-\delta)\hat K_t+\delta\hat I_t .}
+(c) Take logs: $-\gamma\ln C_t=\ln\beta+\ln R-\gamma\ln C_{t+1}$. The steady
+state has the same equation with bars, so subtract it:
+$-\gamma\hat C_t=-\gamma\hat C_{t+1}$, that is $\hat C_{t+1}=\hat C_t$.
+If $R_t$ varies, the same steps give $\hat C_{t+1}-\hat C_t=\frac1\gamma\hat R_t$, so the IES $1/\gamma$ scales the response.
+
+\subsection*{5.4 Working's time-averaging problem}
+Measured consumption is the average of two periods, observed every other period:
+$x_{t+1}=\frac{c_{t+1}+c_t}{2}$, with true consumption a random walk $c_t=c_{t-1}+\varepsilon_t$.
+
+\prob{8 (Working 1960).} Let $u_{t+1}=x_{t+1}-x_{t-1}$. Show $u$ is not white noise and find its first autocorrelation.
+\sol
+\st{1 (write $u$ in shocks)}
+\begin{align*}
+u_{t+1}&=\tfrac12\big[c_{t+1}+c_t-c_{t-1}-c_{t-2}\big]\\
+&=\tfrac12\big[(c_t+\varepsilon_{t+1})+c_t-c_{t-1}-c_{t-2}\big]=\tfrac12\big[2c_t+\varepsilon_{t+1}-c_{t-1}-c_{t-2}\big]\\
+&=\tfrac12\big[2(c_{t-1}+\varepsilon_t)+\varepsilon_{t+1}-c_{t-1}-c_{t-2}\big]=\tfrac12\big[c_{t-1}+2\varepsilon_t+\varepsilon_{t+1}-c_{t-2}\big]\\
+&=\tfrac12\big[(c_{t-2}+\varepsilon_{t-1})+2\varepsilon_t+\varepsilon_{t+1}-c_{t-2}\big]=\tfrac12\big[\varepsilon_{t+1}+2\varepsilon_t+\varepsilon_{t-1}\big].
+\end{align*}
+\st{2 (variance)} Shocks are uncorrelated, so
+$\Var(u_{t+1})=\frac14(1+4+1)\sigma^2=\frac32\sigma^2$.
+\st{3 (covariance with the previous observation)} $u_{t-1}=\frac12[\varepsilon_{t-1}+2\varepsilon_{t-2}+\varepsilon_{t-3}]$. The only shared shock is $\varepsilon_{t-1}$, with weight $\frac12\cdot1$ in each:
+\[
+\Cov(u_{t+1},u_{t-1})=\tfrac12\cdot\tfrac12\,\E[\varepsilon_{t-1}^2]=\tfrac14\sigma^2 .
+\]
+\st{4 (autocorrelation)}
+\ans{\rho_1=\frac{\sigma^2/4}{3\sigma^2/2}=\frac16\neq0}
+So $x$ looks predictable even though $c$ is a random walk, and a naive test would wrongly reject the random walk.
+\st{5 (the fix)} $u_{t-3}=\frac12[\varepsilon_{t-3}+2\varepsilon_{t-4}+\varepsilon_{t-5}]$ shares no shock with $u_{t+1}$, so $\Cov(u_{t+1},u_{t-3})=0$. Skipping one observation removes the spurious correlation. A simulation in the check script gives $\rho_1=0.166$ and $-0.0001$ for the skipped lag.
+
+% ======================================================================
+\section*{Part 6. Dynamic programming (Lecture 3, Discussion 4, PSets 3--4)}
+\addcontentsline{toc}{section}{Part 6. Dynamic programming}
+
+\subsection*{6.1 The two ways to write the problem}
+\textbf{Problem 1.} $\max\sum_{t=0}^\infty\beta^t\hat F(y_t)$ s.t. $x_{t+1}=h(x_t,y_t)$, $x_{t+1}\in\Gamma(x_t)$,
+with $x$ the state, $y$ the control, $h$ the transition, $\Gamma$ the feasible set.
+
+\textbf{Problem 2.} Solve the transition for the control, $y_t=\hat h(x_t,x_{t+1})$,
+and define $F(x_t,x_{t+1}):=\hat F(\hat h(x_t,x_{t+1}))$. Then
+\[
+\max_{\{x_{t+1}\in\Gamma(x_t)\}}\sum_{t=0}^\infty\beta^tF(x_t,x_{t+1}).
+\]
+The transition has been folded into the objective.
+
+\textbf{Sequence Euler equation.} $x_{t+1}$ appears in two terms,
+$\beta^tF(x_t,x_{t+1})$ and $\beta^{t+1}F(x_{t+1},x_{t+2})$. With an interior
+solution, differentiate and divide by $\beta^t$:
+\ans{F_2(x_t,x_{t+1})+\beta F_1(x_{t+1},x_{t+2})=0,\qquad\lim_{T\to\infty}\beta^TF_1(x_T,x_{T+1})\,x_T=0\ \text{(TVC).}}
+
+\textbf{Example (growth planner).} $\max\sum\beta^tu(c_t)$ s.t.
+$k_{t+1}=(1-\delta)k_t+i_t$, $c_t+i_t\le y_t$, $y_t\le f(k_t)$, $c_t\ge0$, $k_{t+1}\ge0$, $k_0$ given.
+\st{1} Combine and use $u'>0$ to make it bind: $c_t+k_{t+1}=f(k_t)+(1-\delta)k_t$.
+\st{2} Feasible set: $c_t\ge0$ gives the upper bound, so $\Gamma(k)=[0,\,f(k)+(1-\delta)k]$.
+\st{3} $F(k,k')=u\big(f(k)+(1-\delta)k-k'\big)$, so
+\[
+F_1(k,k')=u'(c)\big(f'(k)+1-\delta\big),\qquad F_2(k,k')=-u'(c).
+\]
+\st{4} Plug into the Euler equation:
+\[
+-u'(c_t)+\beta u'(c_{t+1})\big(f'(k_{t+1})+1-\delta\big)=0\ \Longrightarrow\ \boxed{\ u'(c_t)=\beta u'(c_{t+1})\big(f'(k_{t+1})+1-\delta\big)\ }
+\]
+
+\subsection*{6.2 Deriving the Bellman equation}
+\st{1} Define the value function $V(x_0):=\max_{\{x_{t+1}\in\Gamma(x_t)\}}\sum_{t=0}^\infty\beta^tF(x_t,x_{t+1})$.
+\st{2} Split off the first term:
+$V(x_0)=\max\big\{F(x_0,x_1)+\beta\sum_{t=1}^\infty\beta^{t-1}F(x_t,x_{t+1})\big\}$.
+\st{3} Maximize in steps, first over $x_1$, then over everything after:
+\[
+V(x_0)=\max_{x_1\in\Gamma(x_0)}\Big\{F(x_0,x_1)+\beta\max_{\{x_{t+1}\in\Gamma(x_t)\}_{t\ge1}}\sum_{t=1}^\infty\beta^{t-1}F(x_t,x_{t+1})\Big\}.
+\]
+\st{4} Re-index the inner sum with $s=t-1$: it is $\sum_{s=0}^\infty\beta^sF(x_{s+1},x_{s+2})$, the same problem started from $x_1$. So it equals $V(x_1)$:
+\[
+V(x_0)=\max_{x_1\in\Gamma(x_0)}\big\{F(x_0,x_1)+\beta V(x_1)\big\}.
+\]
+\st{5} Drop time subscripts ($x$ today, $x'$ tomorrow):
+\ans{V(x)=\max_{x'\in\Gamma(x)}\big\{F(x,x')+\beta V(x')\big\},\qquad g(x)=\arg\max_{x'\in\Gamma(x)}\big\{F(x,x')+\beta V(x')\big\}.}
+This is a functional equation. The unknown is the function $V$. The policy
+satisfies $V(x)=F(x,g(x))+\beta V(g(x))$. That the sequence problem and the
+recursive problem give the same answer is the \textbf{principle of optimality}.
+Growth model: $V(k)=\max_{k'\in[0,f(k)+(1-\delta)k]}\{u(f(k)+(1-\delta)k-k')+\beta V(k')\}$.
+
+\subsection*{6.3 Properties of the value function (Lecture 3, p.~5)}
+\begin{enumerate}
+\item $V$ is often unique and can be approached by iterations (6.4).
+\item If $F$ is strictly increasing in its first argument and $\Gamma$ is monotone ($x\le\tilde x\Rightarrow\Gamma(x)\subseteq\Gamma(\tilde x)$), then $V$ is strictly increasing.
+\item If $F$ is jointly strictly concave and $\Gamma$ is convex ($x'\in\Gamma(x)$, $\tilde x'\in\Gamma(\tilde x)\Rightarrow\theta x'+(1-\theta)\tilde x'\in\Gamma(\theta x+(1-\theta)\tilde x)$ for $\theta\in(0,1)$), then $V$ is strictly concave and the policy is unique.
+\item $V$ is sometimes differentiable, which gives the Euler equation (6.5). The policy is sometimes increasing.
+\end{enumerate}
+
+\subsection*{6.4 The Bellman operator is a contraction}
+\textbf{Definitions.} $\Theta$ is the set of continuous real functions on a closed
+bounded $X$. The Bellman operator is $(Tf)(x):=\max_{x'\in\Gamma(x)}\{F(x,x')+\beta f(x')\}$.
+A metric $d$ on $M$ satisfies $d(x,y)=0\iff x=y$, symmetry, and the triangle
+inequality. The sup-norm metric is $d(f,g)=\sup_x|f(x)-g(x)|$. $T$ is a
+\textbf{contraction with modulus} $\beta\in[0,1)$ if $d(Tf,Tg)\le\beta\,d(f,g)$ for all $f,g$.
+
+\textbf{Prop 1 (Banach).} If $(\Theta,d)$ is a non-empty complete metric space and $T$ a contraction with modulus $\beta$, then (i) $T$ has a unique fixed point $f^*=Tf^*$, and (ii) $d(Tf_0,f^*)\le\beta\,d(f_0,f^*)$ for any $f_0$.
+
+\textbf{Prop 2 (Blackwell's sufficient conditions).} If $T$ satisfies
+(i) \emph{monotonicity}, $f\le g$ everywhere $\Rightarrow Tf\le Tg$ everywhere, and
+(ii) \emph{discounting}, there is $\beta\in[0,1)$ with $T(f+k)\le Tf+\beta k$ for every constant $k\ge0$,
+then $T$ is a contraction with modulus $\beta$.
+
+\textbf{Verifying Blackwell for the Bellman operator.}
+\st{1 (monotonicity)} Take $f\le g$. For every $x'$, $F(x,x')+\beta f(x')\le F(x,x')+\beta g(x')$ because $\beta>0$. The max of a smaller function is smaller:
+\[
+Tf(x)=\max_{x'}\{F(x,x')+\beta f(x')\}\le\max_{x'}\{F(x,x')+\beta g(x')\}=Tg(x).
+\]
+\st{2 (discounting)} For a constant $k$,
+\[
+T(f+k)(x)=\max_{x'}\{F(x,x')+\beta f(x')+\beta k\}=\max_{x'}\{F(x,x')+\beta f(x')\}+\beta k=Tf(x)+\beta k .
+\]
+The constant comes out of the max because it does not depend on $x'$. This holds with equality, which needs $\beta<1$ to count.
+\st{3} So $T$ is a contraction. Bounded continuous functions with the sup norm form a complete space, so Banach applies: $V$ exists, is unique, and
+\[
+d(T^nV_0,V)\le\beta\,d(T^{n-1}V_0,V)\le\dots\le\beta^nd(V_0,V)\to0 .
+\]
+\textbf{Algorithm (VFI).} Guess $V_0$ (for example $V_0\equiv0$), iterate $V_{n+1}=TV_n$ until $\sup|V_{n+1}-V_n|<$ tol.
+\textbf{Caveat.} If $F$ is unbounded (log utility, $f(k)=k^\alpha$ on $[0,\infty)$), $\Theta$ contains unbounded functions, completeness can fail, and Banach need not apply directly.
+Chain to remember: Blackwell $\Rightarrow$ contraction $\Rightarrow$ Banach $\Rightarrow$ $V$ unique and VFI converges.
+
+\subsection*{6.5 The Euler equation from the Bellman equation}
+This is Discussion 4's four-step recipe: (1) state and control, (2) Bellman, (3) FOC, (4) envelope.
+\st{1 (FOC)} Differentiate the right side of the Bellman equation in $x'$:
+$F_2(x,x')+\beta V'(x')=0$. The policy solves it: $F_2(x,g(x))+\beta V'(g(x))=0$.
+\st{2 (envelope)} Differentiate $V(x)=F(x,g(x))+\beta V(g(x))$ in $x$ with the chain rule:
+\begin{align*}
+V'(x)&=F_1(x,g(x))+F_2(x,g(x))g'(x)+\beta V'(g(x))g'(x)\\
+&=F_1(x,g(x))+\underbrace{\big[F_2(x,g(x))+\beta V'(g(x))\big]}_{=0\text{ by the FOC}}g'(x)=F_1(x,g(x)).
+\end{align*}
+\st{3 (shift forward one period)} $V'(x')=F_1(x',g(x'))=F_1(g(x),g(g(x)))$.
+\st{4 (substitute into the FOC)}
+\ans{F_2\big(x,g(x)\big)+\beta F_1\big(g(x),g(g(x))\big)=0\qquad\text{(functional Euler equation)}}
+It is the sequence Euler equation with $x_{t+1}=g(x_t)$, $x_{t+2}=g(g(x_t))$.
+
+\prob{9 (growth model Euler and steady state).} For
+\[
+V(k)=\max_{k'}\big\{u(f(k)+(1-\delta)k-k')+\beta V(k')\big\},
+\]
+derive the Euler equation by the four-step recipe and find the steady state for $f(k)=k^\alpha$.
+\sol
+\st{1} State $k$, control $k'$ (then $c$ follows from the resource constraint).
+\st{2} FOC in $k'$: $-u'(c)+\beta V'(k')=0$, so $u'(c)=\beta V'(k')$.
+\st{3} Envelope: $V'(k)=u'(c)\big(f'(k)+1-\delta\big)$. Shift forward: $V'(k')=u'(c')\big(f'(k')+1-\delta\big)$.
+\st{4} Substitute: $u'(c)=\beta u'(c')\big(f'(k')+1-\delta\big)$.
+\st{5 (steady state)} $c=c'$ cancels $u'$: $1=\beta(\alpha k^{\alpha-1}+1-\delta)$, so
+$\alpha k^{\alpha-1}=\frac1\beta-1+\delta$ and
+\ans{k^*=\Big(\frac{\alpha}{1/\beta-1+\delta}\Big)^{\frac{1}{1-\alpha}}}
+With $\delta=1$: $k^*=(\alpha\beta)^{1/(1-\alpha)}$. For $\alpha=0.3$, $\beta=0.6$ this is $0.18^{1/0.7}=0.0863$.
+
+\prob{10 (guess and verify, Discussion 4).} Log utility, $\delta=1$, $f(k)=k^\alpha$. Guess $V(k)=E+F\ln k$. Find $E$, $F$, and the policy.
+\sol
+\st{1} Plug the guess into the right side: $V(k)=\max_{k'}\{\ln(k^\alpha-k')+\beta(E+F\ln k')\}$.
+\st{2 (FOC)}
+\[
+\frac{1}{k^\alpha-k'}=\frac{\beta F}{k'}\ \Longrightarrow\ k'=\beta F(k^\alpha-k')\ \Longrightarrow\ k'(1+\beta F)=\beta Fk^\alpha\ \Longrightarrow\ k'=\frac{\beta F}{1+\beta F}k^\alpha .
+\]
+Then $c=k^\alpha-k'=\frac{1}{1+\beta F}k^\alpha$.
+\st{3 (substitute back)}
+\begin{align*}
+V(k)&=\ln\Big(\frac{k^\alpha}{1+\beta F}\Big)+\beta E+\beta F\ln\Big(\frac{\beta Fk^\alpha}{1+\beta F}\Big)\\
+&=\alpha\ln k-\ln(1+\beta F)+\beta E+\beta F\ln(\beta F)-\beta F\ln(1+\beta F)+\alpha\beta F\ln k\\
+&=\underbrace{\beta E+\beta F\ln(\beta F)-(1+\beta F)\ln(1+\beta F)}_{\text{must equal }E}+\underbrace{\alpha(1+\beta F)}_{\text{must equal }F}\ln k .
+\end{align*}
+\st{4 (match the $\ln k$ coefficient)} $F=\alpha+\alpha\beta F\Rightarrow F(1-\alpha\beta)=\alpha\Rightarrow F=\frac{\alpha}{1-\alpha\beta}$.
+Then $\beta F=\frac{\alpha\beta}{1-\alpha\beta}$ and $1+\beta F=\frac{1-\alpha\beta+\alpha\beta}{1-\alpha\beta}=\frac{1}{1-\alpha\beta}$.
+\st{5 (policy)} $\frac{\beta F}{1+\beta F}=\frac{\alpha\beta}{1-\alpha\beta}\cdot(1-\alpha\beta)=\alpha\beta$:
+\ans{k'=\alpha\beta k^\alpha,\qquad c=(1-\alpha\beta)k^\alpha}
+\st{6 (match the constant)} $E=\beta E+\beta F\ln(\beta F)-(1+\beta F)\ln(1+\beta F)$. Substitute
+$\ln(\beta F)=\ln\frac{\alpha\beta}{1-\alpha\beta}=\ln(\alpha\beta)-\ln(1-\alpha\beta)$ and
+$\ln(1+\beta F)=-\ln(1-\alpha\beta)$:
+\begin{align*}
+(1-\beta)E&=\frac{\alpha\beta}{1-\alpha\beta}\big[\ln(\alpha\beta)-\ln(1-\alpha\beta)\big]+\frac{1}{1-\alpha\beta}\ln(1-\alpha\beta)\\
+&=\frac{\alpha\beta}{1-\alpha\beta}\ln(\alpha\beta)+\frac{1-\alpha\beta}{1-\alpha\beta}\ln(1-\alpha\beta)
+=\frac{\alpha\beta}{1-\alpha\beta}\ln(\alpha\beta)+\ln(1-\alpha\beta).
+\end{align*}
+\ans{E=\frac{1}{1-\beta}\Big[\ln(1-\alpha\beta)+\frac{\alpha\beta}{1-\alpha\beta}\ln(\alpha\beta)\Big],\qquad F=\frac{\alpha}{1-\alpha\beta}}
+With $\alpha=0.3$, $\beta=0.6$: $F=0.3659$, $E=-1.4372$. The check script confirms the Bellman residual is $3\times10^{-11}$.
+
+\prob{11 (VFI by hand, analytically).} Same model, start from $V_0\equiv0$. Find $V_1$, $V_2$, and the general pattern.
+\sol
+\st{1} $V_1(k)=\max_{k'}\ln(k^\alpha-k')$. With no future value, save nothing: $k'=0$, $V_1(k)=\alpha\ln k$.
+\st{2} Suppose $V_n(k)=a_n+b_n\ln k$. Then $V_{n+1}(k)=\max_{k'}\{\ln(k^\alpha-k')+\beta a_n+\beta b_n\ln k'\}$, and the FOC is Problem 10's with $F$ replaced by $b_n$:
+\[
+k'=\frac{\beta b_n}{1+\beta b_n}k^\alpha .
+\]
+\st{3} Substituting back, the $\ln k$ coefficient becomes $b_{n+1}=\alpha(1+\beta b_n)$ (same algebra as Step 3 of Problem 10). With $b_0=0$:
+\[
+b_1=\alpha,\quad b_2=\alpha(1+\alpha\beta),\quad b_3=\alpha(1+\alpha\beta+\alpha^2\beta^2),\quad b_n=\alpha\frac{1-(\alpha\beta)^n}{1-\alpha\beta}\to\frac{\alpha}{1-\alpha\beta}=F .
+\]
+\st{4 (numbers, $\alpha=0.3$, $\beta=0.6$)}
+\[
+\begin{array}{c|ccccc|c}
+n&1&2&3&4&5&\infty\\\hline
+b_n&0.3000&0.3540&0.3637&0.3655&0.3658&0.3659\\
+\text{savings rate }\frac{\beta b_{n-1}}{1+\beta b_{n-1}}&0&0.1525&0.1752&0.1791&0.1799&0.18=\alpha\beta
+\end{array}
+\]
+$V_n$ is the value with $n$ periods left. Each iteration adds one more period of future, so capital is worth more and the savings rate rises toward $\alpha\beta$.
+
+\prob{12 (cake eating, PSet 3 Q1).} $\max\sum\beta^tu(c_t)$ with $u(c)=\frac{c^{1-\gamma}}{1-\gamma}$, $g_{t+1}=g_t-c_t$. Find the policy and value.
+\sol
+\st{1} Bellman: $V(g)=\max_{g'}\{u(g-g')+\beta V(g')\}$. FOC $u'(c)=\beta V'(g')$. Envelope $V'(g)=u'(c)$. Euler: $c_t^{-\gamma}=\beta c_{t+1}^{-\gamma}$, so $c_{t+1}=\beta^{1/\gamma}c_t=:\theta c_t$.
+\st{2} Budget: total consumption equals the cake, $\sum_tc_t=g_0$, so $c_0\sum_t\theta^t=g_0$ and $c_0=(1-\theta)g_0$. The same holds at every date:
+\ans{c=(1-\theta)g,\qquad g'=\theta g,\qquad\theta=\beta^{1/\gamma}}
+\st{3 (value)} $V(g)=\sum_t\beta^t\frac{[(1-\theta)\theta^tg]^{1-\gamma}}{1-\gamma}=u(g)(1-\theta)^{1-\gamma}\sum_t(\beta\theta^{1-\gamma})^t$.
+Now $\beta\theta^{1-\gamma}=\beta\cdot\beta^{(1-\gamma)/\gamma}=\beta^{1/\gamma}=\theta$, so the sum is $1/(1-\theta)$ and
+\ans{V(g)=u(g)\,(1-\theta)^{-\gamma}}
+With $\gamma=2$, $\beta=0.95$: $\theta=0.9747$, so 2.53\% of the cake is eaten each period.
+
+\prob{13 (stochastic consumption-saving, Lecture 3).} $\max E_0\sum\beta^tu(c_t)$ s.t. $c_t+\frac{a_{t+1}}{1+r}=y_t+a_t$, with $y_t$ a two-state Markov chain. Derive the Euler equation from the Bellman equation.
+\sol
+\st{1} States $(a,y)$. $a$ is wealth and $y$ is income, which also forecasts $y'$. Control $a'$.
+\st{2} Bellman:
+\begin{align*}
+V(a,y)&=\max_{a'}\Big\{u\Big(a+y-\frac{a'}{1+r}\Big)+\beta E[V(a',y')|y]\Big\},\\
+E[V(a',y')|y]&=P(y_h|y)V(a',y_h)+P(y_l|y)V(a',y_l).
+\end{align*}
+\st{3 (FOC)} $0=-\frac{1}{1+r}u'(c)+\beta E\big[\frac{\partial V(a',y')}{\partial a'}\big|y\big]$.
+\st{4 (envelope)} With $a'=g(a,y)$,
+\[
+\frac{\partial V}{\partial a}=u'(c)+\underbrace{\Big[-\frac{u'(c)}{1+r}+\beta E\Big[\frac{\partial V(a',y')}{\partial a'}\Big|y\Big]\Big]}_{=0\text{ by the FOC}}\frac{\partial g}{\partial a}=u'(c).
+\]
+\st{5} Shift forward, $\partial V(a',y')/\partial a'=u'(c')$, and substitute into the FOC:
+\ans{u'(c)=\beta(1+r)\,E[u'(c')|y]=\beta(1+r)\sum_{y'\in\{y_l,y_h\}}P(y'|y)\,u'\big(h(a',y')\big)}
+with $h(a,y):=a+y-g(a,y)/(1+r)$ the consumption policy.
+
+% ======================================================================
+\section*{Part 7. Numerical dynamic programming (Discussions 5--6, PSets 4--5)}
+\addcontentsline{toc}{section}{Part 7. Numerical dynamic programming}
+
+\subsection*{7.1 VFI on a grid}
+Three numerical problems. \emph{Function approximation}: store $V$ on a grid,
+an $n_a\times n_y$ matrix. \emph{Optimization}: grid search, pick the best
+column. \emph{Integration}: with discrete shocks the expectation is a weighted sum.
+\begin{enumerate}
+\item Grids $A=\{a_1<\dots<a_{n_a}\}$ with $a_1=a_{\min}$ (this imposes the borrowing limit) and $Y=\{y_H,y_L\}$.
+\item Guess $V_0(a,y)=0$.
+\item Update $V_{j+1}(a,y)=\max_{a'\in A}\{u(y+a-\frac{a'}{1+r})+\beta[pV_j(a',y_H)+(1-p)V_j(a',y_L)]\}$. If consumption is negative, set utility to $-\infty$.
+\item Stop when $\max|V_{j+1}-V_j|<$ tol. Read off $g_a$ as the argmax and $g_c$ from the budget.
+\end{enumerate}
+VFI is slow compared with Euler-equation methods but always converges under
+Blackwell and works even when the Euler equation fails (corners, kinks,
+discrete choices).
+
+\prob{14 (two iterations by hand).} Growth model, $\ln c$, $\delta=1$, $k'=k^\alpha-c$, $\alpha=0.3$, $\beta=0.6$, grid $\{0.1,0.2,0.3\}$, $V_0\equiv0$.
+\sol
+\st{1 (output)} $0.1^{0.3}=0.5012$, $0.2^{0.3}=0.6170$, $0.3^{0.3}=0.6968$.
+\st{2 (payoff matrix $\ln(k^\alpha-k')$, row $k$, column $k'$)}
+\[
+\begin{array}{c|ccc}
+k\backslash k'&0.1&0.2&0.3\\\hline
+0.1&\ln0.4012=-0.9133&\ln0.3012=-1.2000&\ln0.2012=-1.6035\\
+0.2&\ln0.5170=-0.6596&\ln0.4170=-0.8746&\ln0.3170=-1.1487\\
+0.3&\ln0.5968=-0.5161&\ln0.4968=-0.6995&\ln0.3968=-0.9242
+\end{array}
+\]
+\st{3 (iteration 1)} $V_0=0$, so $V_1$ is the row max: $V_1=(-0.9133,-0.6596,-0.5161)$, policy $k'=0.1$ everywhere.
+\st{4 (iteration 2)} Add $0.6V_1(k')=(-0.5480,-0.3958,-0.3097)$ to each row.
+\[
+\renewcommand{\arraystretch}{1.3}
+\begin{array}{c|ccc|c}
+k\backslash k'&0.1&0.2&0.3&V_2\\\hline
+0.1&\begin{array}{c}-0.9133-0.5480\\=-1.4613\end{array}&\begin{array}{c}-1.2000-0.3958\\=-1.5958\end{array}&\begin{array}{c}-1.6035-0.3097\\=-1.9132\end{array}&-1.4613\\
+0.2&\begin{array}{c}-0.6596-0.5480\\=-1.2076\end{array}&\begin{array}{c}-0.8746-0.3958\\=-1.2704\end{array}&\begin{array}{c}-1.1487-0.3097\\=-1.4584\end{array}&-1.2076\\
+0.3&\begin{array}{c}-0.5161-0.5480\\=-1.0641\end{array}&\begin{array}{c}-0.6995-0.3958\\=-1.0953\end{array}&\begin{array}{c}-0.9242-0.3097\\=-1.2339\end{array}&-1.0641
+\end{array}
+\]
+Policy still $k'=0.1$. This matches theory: the true policy $0.18k^{0.3}$ is at most about $0.125$ on this grid, closest to $0.1$.
+
+\subsection*{7.2 Discretizing an AR(1) (Discussion 6)}
+$z'=(1-\rho)\bar z+\rho z+\sigma\varepsilon'$, $\varepsilon'\sim N(0,1)$.
+Stationary standard deviation $\sigma_z=\sigma/\sqrt{1-\rho^2}$.
+Derivation: $\Var(z)=\rho^2\Var(z)+\sigma^2\Rightarrow\Var(z)=\sigma^2/(1-\rho^2)$.
+
+\textbf{Tauchen (1986).}
+\st{1 (grid)} $N$ equally spaced points on $[\bar z-m\sigma_z,\ \bar z+m\sigma_z]$, step $w=2m\sigma_z/(N-1)$.
+\st{2 (probabilities)} Give point $z_\ell$ all the conditional mass within $w/2$ of it. Conditional on $z_j$, $z'$ is normal with mean $(1-\rho)\bar z+\rho z_j$ and sd $\sigma$:
+\[
+p_{j\ell}=\begin{cases}
+\Phi\Big(\dfrac{z_1+w/2-(1-\rho)\bar z-\rho z_j}{\sigma}\Big), & \ell=1,\\[2ex]
+\Phi\Big(\dfrac{z_\ell+w/2-(1-\rho)\bar z-\rho z_j}{\sigma}\Big)-\Phi\Big(\dfrac{z_\ell-w/2-(1-\rho)\bar z-\rho z_j}{\sigma}\Big), & 1<\ell<N,\\[2ex]
+1-\Phi\Big(\dfrac{z_N-w/2-(1-\rho)\bar z-\rho z_j}{\sigma}\Big), & \ell=N.
+\end{cases}
+\]
+
+\textbf{Rouwenhorst (1995).}
+\st{1 (grid)} $N$ equally spaced points on $[\bar z-v,\bar z+v]$ with $v=\sigma_z\sqrt{N-1}$.
+\st{2 (matrix)} Start from $P_2=\begin{pmatrix}p&1-p\\1-q&q\end{pmatrix}$ and build
+\[
+P_n=p\begin{pmatrix}P_{n-1}&\mathbf0\\\mathbf0'&0\end{pmatrix}+(1-p)\begin{pmatrix}\mathbf0&P_{n-1}\\0&\mathbf0'\end{pmatrix}+(1-q)\begin{pmatrix}\mathbf0'&0\\P_{n-1}&\mathbf0\end{pmatrix}+q\begin{pmatrix}0&\mathbf0'\\\mathbf0&P_{n-1}\end{pmatrix},
+\]
+then divide every row except the first and last by 2.
+\st{3 (calibration)} Autocorrelation is $p+q-1=\rho$. With $p=q$, $p=\frac{1+\rho}{2}$.
+Stationary variance is $v^2/(N-1)$, which equals $\sigma_z^2$ by the choice of $v$.
+Rouwenhorst matches mean, variance and autocorrelation for any $N$ and is
+preferred for persistent processes ($\rho>0.9$).
+After discretizing $\tilde z=\log z$, use $z_j=\exp(\tilde z_j)$. The matrix is unchanged.
+
+\prob{15 (Tauchen, $N=3$).} $\rho=0.9$, $\sigma=0.1$, $\bar z=0$, $m=1$. Use
+$\Phi(0.9177)=0.8206$, $\Phi(1.1471)=0.8743$, $\Phi(3.2118)=0.9993$.
+\sol
+\st{1} $\sigma_z=0.1/\sqrt{1-0.81}=0.1/0.4359=0.2294$. Grid $\{-0.2294,0,0.2294\}$, $w=0.2294$, $w/2=0.1147$.
+\st{2 (row 2, $z_j=0$, mean 0)} Cutoffs $\pm0.1147/0.1=\pm1.1471$:
+$p_{21}=\Phi(-1.1471)=1-0.8743=0.1257$, $p_{23}=0.1257$, $p_{22}=1-2(0.1257)=0.7487$.
+\st{3 (row 1, $z_j=-0.2294$, mean $-0.2065$)}
+$p_{11}=\Phi\big(\frac{-0.2294+0.1147+0.2065}{0.1}\big)=\Phi(0.9177)=0.8206$,
+$p_{13}=1-\Phi\big(\frac{0.2294-0.1147+0.2065}{0.1}\big)=1-\Phi(3.2118)=0.0007$,
+$p_{12}=1-0.8206-0.0007=0.1787$.
+\st{4} Row 3 mirrors row 1.
+\ans{P=\begin{pmatrix}0.8206&0.1787&0.0007\\0.1257&0.7487&0.1257\\0.0007&0.1787&0.8206\end{pmatrix}}
+With only 3 points and $m=1$ the chain's stationary sd is 0.175 against the true 0.229. Tauchen is poor with few points and high persistence, which is why Rouwenhorst exists.
+
+\prob{16 (Rouwenhorst, $N=3$).} Same process. Build $P_3$ and check the moments.
+\sol
+\st{1} $p=q=\frac{1+0.9}{2}=0.95$, $v=\sqrt2\cdot0.2294=0.3244$, grid $\{-0.3244,0,0.3244\}$.
+\st{2 (stack the four pieces)} First row: from the $p$ block $(p^2,\ p(1-p),\ 0)$ and from the $(1-p)$ block $(0,\ (1-p)p,\ (1-p)^2)$. Sum $(p^2,\ 2p(1-p),\ (1-p)^2)$.
+Middle row, before halving: $p(1-q)+(1-q)p=2p(1-q)$, $pq+(1-p)(1-q)+(1-q)(1-p)+qp=2pq+2(1-p)(1-q)$, $(1-p)q+q(1-p)=2q(1-p)$. Halve.
+Last row by symmetry: $((1-q)^2,\ 2q(1-q),\ q^2)$.
+\[
+P_3=\begin{pmatrix}p^2&2p(1-p)&(1-p)^2\\p(1-q)&pq+(1-p)(1-q)&q(1-p)\\(1-q)^2&2q(1-q)&q^2\end{pmatrix}
+=\begin{pmatrix}0.9025&0.0950&0.0025\\0.0475&0.9050&0.0475\\0.0025&0.0950&0.9025\end{pmatrix}
+\]
+\st{3 (moments)} The stationary distribution is $(\tfrac14,\tfrac12,\tfrac14)$. Variance $\tfrac14v^2+\tfrac14v^2=\tfrac12v^2=\tfrac12\cdot2\sigma_z^2=\sigma_z^2=0.0526$. Exact.
+Conditional mean from the top row ($z=-v$): $E[z'|z=-v]=-vp^2+v(1-p)^2=-v(p-(1-p))(p+(1-p))=-v(2p-1)=-0.9v=-\rho v$. By symmetry $E[z'|z=v]=\rho v$. Exact.
+
+% ======================================================================
+\section*{Part 8. Consumption (Lecture 4)}
+\addcontentsline{toc}{section}{Part 8. Consumption}
+
+\subsection*{8.1 The permanent income hypothesis (PIH) under certainty}
+\st{1 (setup)} $\max\sum_t\beta^tu(c_t)$, $u'>0$, $u''<0$, subject to
+$c_t+\frac{a_{t+1}}{1+r_t}=y_t+a_t$, $a_0$ given, and NPG
+$\lim_{T\to\infty}a_{T+1}/\prod_{\tau=0}^{T}(1+r_\tau)\ge0$.
+Here $a$ is wealth at the start of the period. This timing differs from Lecture 2's $b$.
+\st{2 (Euler)} $u'(c_t)=\beta(1+r_t)u'(c_{t+1})$.
+\st{3 (intertemporal budget)}
+\[
+\sum_{j=0}^\infty\frac{c_{t+j}}{\prod_{k=0}^{j-1}(1+r_{t+k})}=a_t+\sum_{j=0}^\infty\frac{y_{t+j}}{\prod_{k=0}^{j-1}(1+r_{t+k})}\qquad\text{lifetime consumption}=\text{lifetime wealth.}
+\]
+\st{4 (smoothing)} If $\beta(1+r_t)=1$ then $u'(c_t)=u'(c_{t+1})$, and since $u'$ is strictly decreasing, $c_t=c_{t+1}$.
+
+\subsection*{8.2 CRRA and the intertemporal elasticity of substitution}
+\st{1} With $u'(c)=c^{-1/\sigma}$ the Euler equation is $c_t^{-1/\sigma}=\beta(1+r_t)c_{t+1}^{-1/\sigma}$.
+\st{2} Rearrange: $(c_{t+1}/c_t)^{1/\sigma}=\beta(1+r_t)$, so
+\ans{\frac{c_{t+1}}{c_t}=\big[\beta(1+r_t)\big]^\sigma,\qquad\ln\frac{c_{t+1}}{c_t}=\sigma\ln(1+r_t)+\sigma\ln\beta .}
+\st{3} So $\dfrac{\partial\ln(c_{t+1}/c_t)}{\partial\ln(1+r_t)}=\sigma$. That is the definition of the IES. Estimates put $\sigma\in[0.1,0.5]$.
+\st{4} With $\beta=1/(1+\rho)$: consumption grows iff $\frac{1+r_t}{1+\rho}>1$, that is iff $r_t>\rho$.
+
+\subsection*{8.3 The marginal propensity to consume}
+\st{1} Constant $R=1+r$. Euler, applied $j$ times: $c_{t+j}=(R\beta)^\sigma c_{t+j-1}=\big((R\beta)^\sigma\big)^jc_t$.
+\st{2} Plug into the budget:
+\[
+\sum_{j=0}^\infty R^{-j}\big((R\beta)^\sigma\big)^jc_t=c_t\sum_{j=0}^\infty\big(R^{-1}(R\beta)^\sigma\big)^j=\frac{c_t}{1-R^{-1}(R\beta)^\sigma}.
+\]
+\st{3} Set equal to wealth:
+\ans{c_t=\big(1-R^{-1}(R\beta)^\sigma\big)\Big[a_t+\sum_{j=0}^\infty R^{-j}y_{t+j}\Big]}
+\st{4 (transitory MPC)} $y_t$ enters with weight $R^0=1$:
+\[
+\text{mpc}=\frac{\partial c_t}{\partial y_t}=1-R^{-1}(R\beta)^\sigma\ \overset{R\beta=1}{=}\ 1-\frac{1}{1+r}=\frac{r}{1+r}\approx r .
+\]
+Small, around 0.03. A one-time windfall is spread over the whole future.
+\st{5 (permanent MPC)} Write $y_{t+j}=y^P+y^c_{t+j}$. A rise in $y^P$ raises every term:
+$\sum_jR^{-j}y^P=y^P\frac{1}{1-R^{-1}}=y^P\frac{1+r}{r}$. So with $R\beta=1$,
+\[
+\frac{\partial c_t}{\partial y^P}=\Big(1-\frac{1}{1+r}\Big)\frac{1+r}{r}=\frac{r}{1+r}\cdot\frac{1+r}{r}=1 .
+\]
+\ans{\text{mpc}\approx r\ \text{for a transitory change},\qquad\text{mpc}=1\ \text{for a permanent change}}
+The MPC depends on the persistence of the income change (Friedman 1957).
+
+\subsection*{8.4 Rational expectations errors and the random walk (Hall 1978)}
+\textbf{RE error.} $\varepsilon_{t+1}:=s_{t+1}-E_t[s_{t+1}]$ with $E_t[\cdot]=E[\cdot\,|I_t]$. Three properties:
+\begin{enumerate}
+\item Mean zero: $E_t[\varepsilon_{t+1}]=E_t[s_{t+1}]-E_t[s_{t+1}]=0$.
+\item Orthogonal to information: for $x_\tau\in I_t$, $E_t[x_\tau\varepsilon_{t+1}]=x_\tau E_t[\varepsilon_{t+1}]=0$.
+\item Unpredictable by regression: the slope of $\varepsilon_{t+1}$ on $x_t$ is $\frac{\Cov(\varepsilon_{t+1},x_t)}{\Var(x_t)}=\frac{E[E_t[\varepsilon_{t+1}x_t]]}{\Var(x_t)}=0$ by the law of iterated expectations and property 2.
+\end{enumerate}
+\textbf{Random walk derivation.}
+\st{1} Stochastic Euler: $u'(c_t)=\beta(1+r)E_t[u'(c_{t+1})]$.
+\st{2} Write $u'(c_{t+1})=E_t[u'(c_{t+1})]+\varepsilon_{t+1}$. Then
+$u'(c_t)=\beta(1+r)\big[u'(c_{t+1})-\varepsilon_{t+1}\big]$.
+\st{3} With $\beta(1+r)\approx1$: $u'(c_{t+1})\approx u'(c_t)+\varepsilon_{t+1}$. Marginal utility is a random walk.
+\st{4} Linearize $u'$ around steady-state $c$: $u'(c_t)\approx u'(c)+u''(c)c(\ln c_t-\ln c)$. Plug into both sides of Step 3, cancel $u'(c)$, and divide by $u''(c)c$:
+\ans{\ln c_{t+1}=\ln c_t+\eta_{t+1},\qquad\eta_{t+1}=\frac{\varepsilon_{t+1}}{c\,u''(c)},\qquad E_t[\ln c_{t+1}]=\ln c_t .}
+\st{5 (Hall's test)} Estimate $\ln c_{t+1}=\ln c_t+\gamma x_t+\eta_{t+1}$ with $x_t\in I_t$ (lagged income, stock prices). The PIH says $H_0:\gamma=0$.
+\textbf{Evidence.} Shea (1995) finds that predictable union wage changes move
+consumption, which contradicts the PIH. Johnson, Parker and Souleles (2006)
+use the randomized timing of the 2001 tax rebates (\$300--600):
+$c_{i,t}-c_{i,t-1}=\beta R_{i,t}+\text{controls}+u_{i,t}$. The PIH predicts
+$\beta=0$ for an anticipated payment ($r/(1+r)\approx r$ even if unanticipated).
+They estimate $\hat\beta\approx0.2$--$0.3$, which rejects the PIH. Also cited:
+Hsieh (2003), Kueng (2016), Kaplan and Violante (2014).
+
+\subsection*{8.5 Precautionary saving}
+\st{1} With $\beta(1+r)=1$ the Euler equation is $u'(c_t)=E_t[u'(c_{t+1})]$.
+\st{2} Expand $u'(c_{t+1})$ to second order around $c_t$:
+$u'(c_{t+1})\approx u'(c_t)+u''(c_t)(c_{t+1}-c_t)+\frac12u'''(c_t)(c_{t+1}-c_t)^2$.
+\st{3} Take $E_t$ and use Step 1 to cancel $u'(c_t)$:
+$0=u''(c_t)E_t[c_{t+1}-c_t]+\frac12u'''(c_t)E_t[(c_{t+1}-c_t)^2]$.
+\st{4} Solve and divide both sides by $c_t$ (on the right, write $1/c_t=c_t/c_t^2$):
+\ans{E_t\Big[\frac{c_{t+1}-c_t}{c_t}\Big]=\underbrace{-\frac{u'''(c_t)c_t}{u''(c_t)}}_{\text{relative prudence}}\cdot\frac12\,E_t\Big[\Big(\frac{c_{t+1}-c_t}{c_t}\Big)^2\Big]}
+Since $u''<0$, expected growth is positive iff $u'''>0$ (prudence, Kimball 1990).
+Consumption is pushed into the future, so the household saves more today. This is precautionary saving.
+\st{5 (which utilities)} Quadratic $u=b_1c-\frac12b_2c^2$ has $u'''=0$, so there is no precautionary saving (certainty equivalence). CRRA has $u'''=\frac1\sigma(\frac1\sigma+1)c^{-1/\sigma-2}>0$, relative prudence $1+\frac1\sigma$.
+\st{6 (picture)} $u'$ convex ($u'''>0$) gives, by Jensen, $E_t[u'(c_{t+1})]>u'(E_t[c_{t+1}])$. Then $u'(c_t)=E_t[u'(c_{t+1})]>u'(E_t[c_{t+1}])$, and since $u'$ is decreasing, $c_t<E_t[c_{t+1}]$.
+
+\subsection*{8.6 Borrowing constraints}
+\textbf{Two kinds of limit.} $a_{t+1}\ge\underline a$ with $\underline a\le0$.
+An \emph{ad hoc} limit is just imposed. The \emph{natural} limit is the most a
+household can repay even if it consumes zero forever.
+\st{1} Future budget from $t+1$ on with $c\ge0$:
+$a_{t+1}+\sum_{j\ge0}\frac{y_{t+1+j}}{(1+r)^j}=\sum_{j\ge0}\frac{c_{t+1+j}}{(1+r)^j}\ge0$.
+\st{2} This must hold for the worst income path, $y=y_{\min}$ forever:
+\ans{a_{t+1}\ge-y_{\min}\sum_{j=0}^\infty\frac{1}{(1+r)^j}=-\frac{1+r}{r}\,y_{\min}}
+\textbf{KKT with the constraint.}
+\st{1} $\mathcal L=E_0\sum_t\beta^t\big[u(c_t)+\lambda_t\big(y_t+a_t-c_t-\frac{a_{t+1}}{1+r}\big)+\mu_t(a_{t+1}-\underline a)\big]$.
+\st{2} FOC in $c_t$: $u'(c_t)=\lambda_t$. FOC in $a_{t+1}$ ($a_{t+1}$ appears at $t$ and as $a_{t+1}$ in the date-$(t+1)$ budget):
+$-\frac{\lambda_t}{1+r}+\mu_t+\beta E_t[\lambda_{t+1}]=0$.
+\st{3} Multiply by $(1+r)$ and substitute $\lambda=u'$:
+\ans{u'(c_t)=\beta(1+r)E_t[u'(c_{t+1})]+(1+r)\mu_t,\qquad\mu_t\ge0,\quad\mu_t(a_{t+1}-\underline a)=0 .}
+\st{4 (unconstrained)} $a_{t+1}>\underline a\Rightarrow\mu_t=0$, the usual Euler equation.
+\st{5 (constrained)} $a_{t+1}=\underline a$, $\mu_t\ge0$, so $u'(c_t)\ge\beta(1+r)E_t[u'(c_{t+1})]$. Consumption is lower than the household would like. From the budget, $c_t=y_t+a_t-\frac{\underline a}{1+r}$, so
+\ans{\text{mpc}=\frac{\partial c_t}{\partial y_t}=1\ \text{when the constraint binds}}
+This high MPC for constrained households is the core of HANK models.
+\st{6 (self-insurance)} With $\beta(1+r)=1$, $u'(c_t)\ge E_t[u'(c_{t+1})]$, so marginal utility is a supermartingale. Under conditions the supermartingale convergence theorem gives that $u'(c_t)$ converges almost surely. With income risk that never dies out, consumption cannot settle at a finite level, so the only limit consistent with the budget is $u'(c_t)\to0$, and $c$ and $a$ grow without bound. Using quadratic utility, $b_1-b_2c_t\ge E_t[b_1-b_2c_{t+1}]$, which means $c_t\le E_t[c_{t+1}]$. This isolates the constraint-driven saving motive from prudence, since quadratic utility has none.
+
+\prob{17 (MPCs).} (a) $\beta(1+r)=1$, $r=0.04$. Find the exact transitory MPC.
+(b) $\beta=0.95$, $r=0.04$, $\sigma=0.5$. Find the transitory MPC. (c) Find the MPC out of a permanent change in (a).
+\sol
+(a) $1-\frac{1}{1.04}=\frac{0.04}{1.04}=0.0385$.
+(b) $R\beta=1.04\cdot0.95=0.988$, $(0.988)^{0.5}=0.99398$, divided by $1.04$ gives $0.95575$, so $\text{mpc}=1-0.95575=0.0442$.
+(c) $\frac{0.04}{1.04}\cdot\frac{1.04}{0.04}=1$.
+
+\prob{18 (natural borrowing limit).} $y_{\min}=0.5$, $r=0.04$.
+\sol
+$-\frac{1.04}{0.04}\cdot0.5=-26\cdot0.5=-13$. The household can never owe more than 13.
+
+\prob{19 (size of the precautionary motive).} Log utility, $\beta(1+r)=1$,
+consumption growth risk with standard deviation 5\%. Approximate expected growth.
+\sol
+Relative prudence for log is $1+\frac11=2$. So $E[\Delta c/c]\approx2\cdot\frac12\cdot(0.05)^2=0.0025$, or 0.25\% a year.
+An exact two-point check ($\pm5\%$ around the mean) gives $0.249\%$.
+
+\prob{20 (a binding borrowing constraint).} Two periods, $\beta=1$, $r=0$, log utility,
+$y_1=1$, $y_2=3$, no borrowing ($a_2\ge0$). Find $c_1$, $c_2$, $\mu$, and the MPC out of $y_1$.
+\sol
+\st{1} Unconstrained, Euler with $\beta(1+r)=1$ gives $c_1=c_2=\frac{1+3}{2}=2$, which needs $a_2=y_1-c_1=-1<0$. Not allowed.
+\st{2} So the constraint binds: $a_2=0$, $c_1=y_1=1$, $c_2=y_2=3$.
+\st{3} Multiplier from $u'(c_1)=\beta(1+r)u'(c_2)+(1+r)\mu$: $1=\frac13+\mu$, so $\mu=\frac23>0$, consistent with KKT.
+\st{4} $c_1=y_1$ one for one, so the MPC is 1. Without the constraint it would be $\frac12$.
+
+\prob{21 (RE errors).} Under the PIH with quadratic utility and $\beta(1+r)=1$, show $E_t[c_{t+1}]=c_t$ and explain why regressing $\Delta c_{t+1}$ on lagged income should give zero.
+\sol
+\st{1} $u'(c)=b_1-b_2c$, so the Euler equation $b_1-b_2c_t=E_t[b_1-b_2c_{t+1}]$ gives $c_t=E_t[c_{t+1}]$.
+\st{2} So $\Delta c_{t+1}=c_{t+1}-E_t[c_{t+1}]$ is an RE error.
+\st{3} Lagged income is in $I_t$. By property 3 the population slope of an RE error on any variable in $I_t$ is zero. A nonzero estimate (excess sensitivity) rejects the PIH.
+
+% ======================================================================
+\section*{Sources}
+\addcontentsline{toc}{section}{Sources}
+\begin{itemize}
+\item Lecture notes, ECO387C Fall 2026: Intro to Macro (Part 1), An endowment economy (Parts 3--4), Dynamic Programming (Part 6, Problem 13), Consumption (Part 8). Transcriptions in \texttt{lectures/}.
+\item Discussions 1--6 (Kim and Yan): NIPA (Part 2), two-period equilibrium (Problem 3), log-linearization and Working (Part 5), DP recipe, guess and verify, VFI (Problems 9--11), VFI algorithm (7.1), Tauchen and Rouwenhorst (7.2).
+\item Problem sets 2--6: alternating economy (Problem 4), cake eating (Problem 12), log-linearization rules (5.3), VFI by hand (Problem 14), Markov bond pricing (Problem 6).
+\item Azzimonti, Krusell, McKay and Mukoyama, \emph{Macroeconomics} (2024 draft). Sec.~4.2--4.4 (sequential and recursive methods), Sec.~5.2--5.3 (Arrow-Debreu and sequential equilibrium in the endowment economy), Sec.~7.1 (Markov chains, AR processes), Sec.~7.6 (incomplete markets), Sec.~9.3 (PIH, borrowing constraints, precautionary saving).
+\item Working, H. (1960), ``Note on the correlation of first differences of averages in a random chain,'' \emph{Econometrica} 28(4), 916--918.
+\end{itemize}
+
+\end{document}

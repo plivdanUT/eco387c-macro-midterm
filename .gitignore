@@ -1,0 +1,12 @@
+# Repo holds the midterm prep only: exams/, lectures/, discussions/.
+textbooks/
+assignments/
+readings/
+/README.md
+# LaTeX / tool byproducts
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+__pycache__/

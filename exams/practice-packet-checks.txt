@@ -1,0 +1,86 @@
+
+=== 1. NIPA three approaches
+value added [100, 150, 250] sum 500
+profits [40, 50, 100] income sum 500
+expenditure C=400 + inventory 100 = 500
+
+=== 2. Two-period endowment economy, yA=(3,1), yB=(1,1), beta=0.9
+q 1.8 1+r 0.5555555555555556
+A c1 2.526315789473684 c2 1.2631578947368423 b 0.47368421052631593 check c2 1.2631578947368423
+B c1 1.4736842105263157 c2 0.736842105263158 b -0.4736842105263157 check c2 0.736842105263158
+clear t1 4.0 t2 2.0 bonds 2.220446049250313e-16
+
+=== 3. T-period alternating economy: brute-force Arrow-Debreu check
+nA=1 nB=1: cA [0.5263 0.5263 0.5263 0.5263 0.5263 0.5263 0.5263 0.5263] cB [0.4737 0.4737 0.4737 0.4737 0.4737 0.4737 0.4737 0.4737] excess 0.0
+  1+r_t [1.1111 1.1111 1.1111 1.1111 1.1111 1.1111 1.1111]
+nA=1 nB=2: cA [0.5263 1.0526 0.5263 1.0526 0.5263 1.0526 0.5263 1.0526] cB [0.2368 0.4737 0.2368 0.4737 0.2368 0.4737 0.2368 0.4737] excess 0.0
+  1+r_t [2.2222 0.5556 2.2222 0.5556 2.2222 0.5556 2.2222]
+formula cA_even 0.5263157894736842 cA_odd 1.0526315789473684 cB_even 0.2368421052631579 cB_odd 0.4736842105263158
+
+=== 4. Stochastic endowment: R(y) = u'(y)/(beta E[u'(y')|y])
+Markov log yh=2 yl=1: Rh 0.9469696969696969 Rl 1.0964912280701755 1/beta 1.0416666666666667
+check Rh 0.9469696969696969
+iid 1/2: R(2) 0.6944444444444444 =2/(3b) 0.6944444444444444 R(1) 1.3888888888888888 =4/(3b) 1.3888888888888888
+
+=== 5. Log-linearization: finite-difference check of the resource constraint
+exact 0.0040715682337664535 approx 0.004
+
+=== 6. Working time averaging, Monte Carlo
+Var u 1.501235935840812 (theory 1.5)  corr lag1 0.16565499227268435 (theory 1/6)
+u_{t+1} vs u_{t-3} (two observations apart) -8.151617849202976e-05 (theory 0)
+
+=== 7. Growth model closed form and analytic VFI, alpha=0.3 beta=0.6
+F 0.3658536585365853 E -1.437175264664921 policy k'= 0.18 k^a
+Bellman residual 3.368860745922575e-11
+iter 1: savings rate used 0.00000, b_1 = 0.30000
+iter 2: savings rate used 0.15254, b_2 = 0.35400
+iter 3: savings rate used 0.17519, b_3 = 0.36372
+iter 4: savings rate used 0.17914, b_4 = 0.36547
+iter 5: savings rate used 0.17985, b_5 = 0.36578
+limit b 0.3658536585365853 limit savings rate 0.18
+steady state k (delta=1) 0.08631843916732022
+
+=== 8. Grid VFI by hand, grid {0.1,0.2,0.3}, alpha=0.3, beta=0.6
+iteration 1: RHS matrix (row k, col k')
+ [[-0.9133 -1.2    -1.6035]
+ [-0.6596 -0.8746 -1.1487]
+ [-0.5161 -0.6995 -0.9242]]
+  V = [-0.9133 -0.6596 -0.5161]  g = [0.1 0.1 0.1]
+iteration 2: RHS matrix (row k, col k')
+ [[-1.4613 -1.5958 -1.9132]
+ [-1.2076 -1.2704 -1.4584]
+ [-1.0641 -1.0953 -1.2339]]
+  V = [-1.4613 -1.2076 -1.0641]  g = [0.1 0.1 0.1]
+k^a [0.5012 0.617  0.6968]
+logs: {'0.1->0.1': -0.9133, '0.1->0.2': -1.2, '0.1->0.3': -1.6035, '0.2->0.1': -0.6596, '0.2->0.2': -0.8746, '0.2->0.3': -1.1487, '0.3->0.1': -0.5161, '0.3->0.2': -0.6995, '0.3->0.3': -0.9242}
+
+=== 9. Cake eating CRRA gamma=2 beta=0.95
+theta 0.9746794344808963 consumption share 1-theta 0.025320565519103666
+
+=== 10. Tauchen N=3, rho=0.9, sigma=0.1, m=1, zbar=0
+sigma_z 0.22941573387056183 grid [-0.2294  0.      0.2294] w 0.22941573387056183
+ row 1: cut args lo 0.9177, hi 3.2118
+ row 2: cut args lo -1.1471, hi 1.1471
+ row 3: cut args lo -3.2118, hi -0.9177
+[[0.8206 0.1787 0.0007]
+ [0.1257 0.7487 0.1257]
+ [0.0007 0.1787 0.8206]]
+stationary [0.2922 0.4156 0.2922] sd 0.17538141245152186 vs 0.22941573387056183
+implied autocorr 0.8199428367502394
+
+=== 11. Rouwenhorst N=3 rho=0.9 sigma=0.1
+p 0.95 v 0.3244428422615252
+[[0.9025 0.095  0.0025]
+ [0.0475 0.905  0.0475]
+ [0.0025 0.095  0.9025]]
+stationary [0.25 0.5  0.25] var 0.05263157894737973 vs sz^2 0.05263157894736845
+E[z'|z=v] 0.29199855803537267 = rho v 0.29199855803537267
+
+=== 12. Consumption: MPCs and limits
+beta R=1 transitory mpc exact r/(1+r) 0.038461538461538464
+beta=0.95 r=0.04 sigma=0.5: mpc 0.04424818155467869
+permanent: (1-1/R)*R/r 1.0000000000000022
+natural limit ymin=0.5: -13.0
+relative prudence log 2.0 approx growth with sd 5%: 0.0025000000000000005
+exact mean growth needed, log, +-5%: 0.002493781055888134
+borrowing-constrained: c1=1 c2=3 mu = 0.6666666666666667

@@ -1,0 +1,667 @@
+% MACRO I (ECO387C), Fall 2026 - solutions to mock-midterm.tex, written the way
+% a student would answer on the exam: every step of work shown, no commentary
+% beyond what each part asks for. Author: Philip Livdan.
+% Every number is checked in mock-midterm-checks.py (-checks.txt).
+% Font gotchas: 12pt only, no math in \section*, \mathbf not \boldsymbol.
+\documentclass[12pt]{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\DeclareMathSizes{12}{12}{8}{7}
+\DeclareMathSizes{11}{11}{8}{7}
+\DeclareMathSizes{10}{10}{8}{7}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5\baselineskip}
+\allowdisplaybreaks
+\setlength{\emergencystretch}{3em}
+\newcommand{\E}{E}
+\newcommand{\pt}[1]{\par\bigskip\textbf{(#1)}\par}
+\newcommand{\ans}[1]{\[\boxed{\ #1\ }\]}
+
+\begin{document}
+\begin{center}
+{\large\bfseries Macroeconomics I (ECO387C) Mock Midterm: Solutions}\\[1mm]
+Fall 2026
+\end{center}
+
+% ================================================================= Q1
+\section*{Question 1}
+
+\pt{a}
+Spending on consumption and new bonds equals the endowment plus the payoff
+on bonds bought last period at last period's rate:
+\ans{c_t+a_{t+1}=R_{t-1}a_t+y_t}
+
+\pt{b}
+Define wealth $b_t:=R_{t-1}a_t$. Then the budget is $c_t+a_{t+1}=b_t+y_t$.
+\ans{\text{state}=(b,y)}
+$b$ is what the household brings into the period. $y$ is a state for three
+reasons. It is current income. The chain is persistent, so $y$ changes the
+probabilities of $y'$. And all households have the same $y$, so it is the
+aggregate state that determines today's bond price $R(y)$.
+
+\pt{c}
+Let $\pi(y'|y)$ be the transition probabilities: $\pi(y_h|y_h)=p_h$,
+$\pi(y_l|y_h)=1-p_h$, $\pi(y_l|y_l)=p_l$, $\pi(y_h|y_l)=1-p_l$. Next
+period's wealth is $b'=R(y)a'$.
+\[
+V(b,y)=\max_{a'}\Big\{u(b+y-a')+\beta\sum_{y'\in\{y_h,y_l\}}\pi(y'|y)\,V\big(R(y)a',y'\big)\Big\},\qquad u(c)=\frac{c^{1-\gamma}}{1-\gamma}.
+\]
+Written out by state:
+\begin{align*}
+V(b,y_h)&=\max_{a'}\Big\{u(b+y_h-a')+\beta\big[p_hV(R(y_h)a',y_h)+(1-p_h)V(R(y_h)a',y_l)\big]\Big\},\\
+V(b,y_l)&=\max_{a'}\Big\{u(b+y_l-a')+\beta\big[(1-p_l)V(R(y_l)a',y_h)+p_lV(R(y_l)a',y_l)\big]\Big\}.
+\end{align*}
+
+\pt{d}
+\textbf{FOC.} Differentiate the right side with respect to $a'$. The
+derivative of $u(b+y-a')$ is $-u'(c)$. The derivative of $V(R(y)a',y')$ is
+$V_b(b',y')\cdot R(y)$.
+\[
+-u'(c)+\beta\sum_{y'}\pi(y'|y)V_b(b',y')R(y)=0
+\]
+\[
+u'(c)=\beta R(y)\sum_{y'}\pi(y'|y)V_b(b',y').\tag{1}
+\]
+\textbf{Envelope.} Let $a'=g(b,y)$ be the policy and $c=b+y-g(b,y)$. Then
+\[
+V(b,y)=u\big(b+y-g(b,y)\big)+\beta\sum_{y'}\pi(y'|y)V\big(R(y)g(b,y),y'\big).
+\]
+Differentiate with respect to $b$:
+\begin{align*}
+V_b(b,y)&=u'(c)\Big(1-\frac{\partial g}{\partial b}\Big)+\beta\sum_{y'}\pi(y'|y)V_b(b',y')R(y)\frac{\partial g}{\partial b}\\
+&=u'(c)+\frac{\partial g}{\partial b}\Big[-u'(c)+\beta R(y)\sum_{y'}\pi(y'|y)V_b(b',y')\Big].
+\end{align*}
+The bracket is zero by (1), so
+\[
+V_b(b,y)=u'(c).\tag{2}
+\]
+\textbf{Euler equation.} Move (2) one period forward, $V_b(b',y')=u'(c')$,
+and substitute into (1):
+\[
+u'(c)=\beta R(y)\sum_{y'}\pi(y'|y)u'(c').
+\]
+\ans{c_t^{-\gamma}=\beta R_t\,\E_t\big[c_{t+1}^{-\gamma}\big]}
+
+\pt{e}
+Market clearing (mass one of households):
+\[
+\text{goods: }\int c_t=y_t,\qquad\text{bonds: }\int a_{t+1}=0 .
+\]
+All households are identical and face the same $R_t$, so they choose the
+same $a_{t+1}$. Bond clearing then gives $a_{t+1}=0$ for everyone, and
+$a_t=0$ as well. The budget becomes
+\[
+c_t+0=R_{t-1}\cdot0+y_t\quad\Longrightarrow\quad c_t=y_t .
+\]
+Substitute $c_t=y_t$ and $c_{t+1}=y_{t+1}$ into the Euler equation:
+\[
+u'(y)=\beta R(y)\,\E[u'(y')|y]
+\]
+\ans{R(y)=\frac{u'(y)}{\beta\,\E[u'(y')|y]}=\frac{y^{-\gamma}}{\beta\,\E[(y')^{-\gamma}|y]}}
+
+\pt{f}
+With $\gamma=2$: $u'(y)=y^{-2}$, so $u'(2)=\frac{1}{4}$ and $u'(1)=1$.
+
+\textbf{High state.}
+\[
+\E[u'(y')|y_h]=p_h\cdot\frac14+(1-p_h)\cdot1=\frac{p_h}{4}+\frac{4-4p_h}{4}=\frac{4-3p_h}{4}
+\]
+\[
+R_h=\frac{1/4}{\beta\cdot\frac{4-3p_h}{4}}=\frac{1}{4}\cdot\frac{4}{\beta(4-3p_h)}=\frac{1}{\beta(4-3p_h)}
+\]
+\textbf{Low state.}
+\[
+\E[u'(y')|y_l]=p_l\cdot1+(1-p_l)\cdot\frac14=\frac{4p_l}{4}+\frac{1-p_l}{4}=\frac{1+3p_l}{4}
+\]
+\[
+R_l=\frac{1}{\beta\cdot\frac{1+3p_l}{4}}=\frac{4}{\beta(1+3p_l)}
+\]
+\ans{R_h=\frac{1}{\beta(4-3p_h)},\qquad R_l=\frac{4}{\beta(1+3p_l)}}
+\textbf{Numbers.} $\beta=0.95$, $p_h=0.8$, $p_l=0.6$:
+\begin{align*}
+4-3p_h&=4-2.4=1.6, & R_h&=\frac{1}{0.95\times1.6}=\frac{1}{1.52}=0.658,\\
+1+3p_l&=1+1.8=2.8, & R_l&=\frac{4}{0.95\times2.8}=\frac{4}{2.66}=1.504,\\
+&& \frac1\beta&=\frac{1}{0.95}=1.053 .
+\end{align*}
+So $R_h<1/\beta<R_l$. In the high state income is expected to fall, so
+households want to save. Nobody can be on the other side of that trade, so
+$R$ falls until they are willing to eat their endowment. In the low state
+income is expected to rise, households want to borrow, and $R$ rises.
+
+\pt{g}
+\textbf{Why the rates are further from $1/\beta$.} The rate has to offset
+the gap between marginal utility today and expected marginal utility
+tomorrow. The gap between the two states is
+\[
+\gamma=1:\ \frac{u'(1)}{u'(2)}=\frac{1}{1/2}=2,\qquad\gamma=2:\ \frac{u'(1)}{u'(2)}=\frac{1}{1/4}=4 .
+\]
+With $\gamma=2$ the household dislikes uneven consumption more (its IES
+$1/\gamma$ is lower), so the desire to smooth is stronger. The rate has to
+move further to make households accept $c=y$.
+
+\textbf{iid case.} If $p_h=1-p_l$, then $\pi(y_h|y_h)=p_h$ and
+$\pi(y_h|y_l)=1-p_l=p_h$. Next period's distribution is the same from
+either state, so
+\[
+\E[u'(y')|y_h]=\E[u'(y')|y_l]=p_h\,u'(2)+(1-p_h)\,u'(1)=:m .
+\]
+Then
+\[
+\frac{R_l}{R_h}=\frac{u'(1)/(\beta m)}{u'(2)/(\beta m)}=\frac{u'(1)}{u'(2)}=\frac{1}{1/4}=4 .
+\]
+\ans{\frac{R_l}{R_h}=4}
+This does not depend on $p_h$, $p_l$ or $\beta$.
+
+% ================================================================= Q2
+\section*{Question 2}
+
+\pt{a}
+\textbf{Household problem.} Taking $\{r_t\}_{t=0}^\infty$ as given, type
+$e\in\{A,B\}$ solves
+\[
+\max_{\{c^e_t,b^e_t\}_{t=0}^\infty}\ \sum_{t=0}^\infty\beta^t\ln c^e_t
+\]
+subject to
+\[
+c^e_t+b^e_t=y^e_t+(1+r_{t-1})b^e_{t-1}\ \ \forall t,\qquad b^e_{-1}=0,\qquad
+\lim_{T\to\infty}\frac{b^e_T}{\prod_{\tau=0}^{T-1}(1+r_\tau)}\ge0 .
+\]
+\textbf{Equilibrium.} A sequential competitive equilibrium is a sequence
+of interest rates $\{r_t\}_{t=0}^\infty$ and allocations
+$\{c^A_t,c^B_t,b^A_t,b^B_t\}_{t=0}^\infty$ such that
+\begin{enumerate}
+\item given $\{r_t\}$, $\{c^e_t,b^e_t\}$ solves type $e$'s problem for $e=A,B$,
+\item the goods market clears: $c^A_t+c^B_t=y^A_t+y^B_t$ for all $t$,
+\item the bond market clears: $b^A_t+b^B_t=0$ for all $t$.
+\end{enumerate}
+
+\pt{b}
+\textbf{Euler equation.} Lagrangian:
+\[
+\mathcal L=\sum_{t=0}^\infty\beta^t\Big[\ln c_t+\lambda_t\big(y_t+(1+r_{t-1})b_{t-1}-c_t-b_t\big)\Big].
+\]
+FOC for $c_t$:
+\[
+\beta^t\Big(\frac{1}{c_t}-\lambda_t\Big)=0\quad\Longrightarrow\quad\lambda_t=\frac{1}{c_t}.
+\]
+FOC for $b_t$ ($b_t$ is in the date-$t$ constraint with coefficient $-1$ and
+in the date-$(t+1)$ constraint with coefficient $1+r_t$):
+\[
+-\beta^t\lambda_t+\beta^{t+1}\lambda_{t+1}(1+r_t)=0\quad\Longrightarrow\quad\lambda_t=\beta(1+r_t)\lambda_{t+1}.
+\]
+Substitute $\lambda_t=1/c_t$:
+\ans{\frac{1}{c_t}=\beta(1+r_t)\frac{1}{c_{t+1}}\qquad\Longleftrightarrow\qquad c_{t+1}=\beta(1+r_t)\,c_t}
+\textbf{Intertemporal budget constraint.} By definition $q_0=1$ and
+$q_{t+1}=\frac{q_t}{1+r_t}$, so $q_t(1+r_{t-1})=q_{t-1}$. Multiply the
+date-$t$ budget by $q_t$:
+\[
+q_tc_t+q_tb_t=q_ty_t+q_t(1+r_{t-1})b_{t-1}=q_ty_t+q_{t-1}b_{t-1}.
+\]
+Write it for $t=0,1,\dots,T$:
+\begin{align*}
+t=0:&\quad q_0c_0+q_0b_0=q_0y_0+0\\
+t=1:&\quad q_1c_1+q_1b_1=q_1y_1+q_0b_0\\
+&\quad\vdots\\
+t=T:&\quad q_Tc_T+q_Tb_T=q_Ty_T+q_{T-1}b_{T-1}
+\end{align*}
+Add them. Each $q_{t-1}b_{t-1}$ on the right cancels the $q_{t-1}b_{t-1}$
+on the left of the line above, leaving
+\[
+\sum_{t=0}^Tq_tc_t+q_Tb_T=\sum_{t=0}^Tq_ty_t .
+\]
+Since $q_T=1/\prod_{\tau=0}^{T-1}(1+r_\tau)$, the NPG condition holds with
+equality at the optimum (TVC), so $q_Tb_T\to0$. Let $T\to\infty$:
+\ans{\sum_{t=0}^\infty q_tc^e_t=\sum_{t=0}^\infty q_ty^e_t}
+
+\pt{c}
+Start from goods clearing at $t$. Use the Euler equation
+$c^e_t=\frac{c^e_{t+1}}{\beta(1+r_t)}$ for each type, then goods clearing
+at $t+1$:
+\begin{align*}
+Y_t&=c^A_t+c^B_t\\
+&=\frac{c^A_{t+1}}{\beta(1+r_t)}+\frac{c^B_{t+1}}{\beta(1+r_t)}\\
+&=\frac{c^A_{t+1}+c^B_{t+1}}{\beta(1+r_t)}\\
+&=\frac{Y_{t+1}}{\beta(1+r_t)} .
+\end{align*}
+Solve for the rate:
+\ans{1+r_t=\frac{1}{\beta}\,\frac{Y_{t+1}}{Y_t}}
+Aggregate endowment: $Y_0=1+1=2$ and $Y_t=1+2=3$ for $t\ge1$.
+\begin{align*}
+1+r_0&=\frac1\beta\cdot\frac{Y_1}{Y_0}=\frac1\beta\cdot\frac32=\frac{3}{2\beta},\\
+1+r_t&=\frac1\beta\cdot\frac{3}{3}=\frac1\beta\qquad(t\ge1).
+\end{align*}
+Prices:
+\begin{align*}
+q_0&=1,\\
+q_1&=\frac{q_0}{1+r_0}=\frac{2\beta}{3},\\
+q_2&=\frac{q_1}{1+r_1}=\frac{2\beta}{3}\cdot\beta=\frac23\beta^2,\\
+q_t&=\frac23\beta^t\qquad(t\ge1).
+\end{align*}
+\ans{1+r_0=\frac{3}{2\beta},\quad1+r_t=\frac1\beta\ (t\ge1),\quad q_0=1,\quad q_t=\tfrac23\beta^t\ (t\ge1)}
+$r_0$ is high because total goods rise from 2 to 3. Both types would like
+to borrow against the higher future, but bonds are in zero net supply, so
+the rate rises until net borrowing is zero.
+
+\pt{d}
+\textbf{Shape of consumption.} From the Euler equation:
+\begin{align*}
+c_1&=\beta(1+r_0)c_0=\beta\cdot\frac{3}{2\beta}\,c_0=\frac32c_0,\\
+c_{t+1}&=\beta\cdot\frac1\beta\,c_t=c_t\qquad(t\ge1).
+\end{align*}
+So each type consumes $c^e_0$ at $t=0$ and $\frac32c^e_0$ at every $t\ge1$.
+
+\textbf{Left side of the IBC.}
+\begin{align*}
+\sum_{t=0}^\infty q_tc_t&=1\cdot c_0+\sum_{t=1}^\infty\frac23\beta^t\cdot\frac32c_0\\
+&=c_0+c_0\sum_{t=1}^\infty\beta^t\\
+&=c_0\sum_{t=0}^\infty\beta^t=\frac{c_0}{1-\beta}.
+\end{align*}
+\textbf{Right side of the IBC.} Using $\sum_{t=1}^\infty\beta^t=\frac{\beta}{1-\beta}$:
+\begin{align*}
+\text{Type }A:&\quad\sum_tq_ty^A_t=1\cdot1+\sum_{t=1}^\infty\frac23\beta^t\cdot1=1+\frac23\cdot\frac{\beta}{1-\beta},\\
+\text{Type }B:&\quad\sum_tq_ty^B_t=1\cdot1+\sum_{t=1}^\infty\frac23\beta^t\cdot2=1+\frac43\cdot\frac{\beta}{1-\beta}.
+\end{align*}
+\textbf{Solve.} Set $\frac{c_0}{1-\beta}$ equal to the right side and
+multiply by $1-\beta$:
+\begin{align*}
+c^A_0&=(1-\beta)\Big(1+\frac23\cdot\frac{\beta}{1-\beta}\Big)=(1-\beta)+\frac23\beta=1-\frac\beta3,\\
+c^B_0&=(1-\beta)\Big(1+\frac43\cdot\frac{\beta}{1-\beta}\Big)=(1-\beta)+\frac43\beta=1+\frac\beta3 .
+\end{align*}
+Then for $t\ge1$:
+\[
+c^A_t=\frac32\Big(1-\frac\beta3\Big)=\frac32-\frac\beta2,\qquad c^B_t=\frac32\Big(1+\frac\beta3\Big)=\frac32+\frac\beta2 .
+\]
+\ans{c^A_0=1-\tfrac\beta3,\ \ c^A_t=\tfrac32-\tfrac\beta2;\qquad c^B_0=1+\tfrac\beta3,\ \ c^B_t=\tfrac32+\tfrac\beta2\qquad(t\ge1)}
+\textbf{Check goods clearing.}
+\begin{align*}
+t=0:&\quad c^A_0+c^B_0=1-\frac\beta3+1+\frac\beta3=2=Y_0\\
+t\ge1:&\quad c^A_t+c^B_t=\frac32-\frac\beta2+\frac32+\frac\beta2=3=Y_t
+\end{align*}
+For example, with $\beta=0.9$: $c^A=(0.70,1.05,1.05,\dots)$ and
+$c^B=(1.30,1.95,1.95,\dots)$.
+
+\pt{e}
+\textbf{Date 0.}
+\[
+b^A_0=y^A_0-c^A_0=1-\Big(1-\frac\beta3\Big)=\frac\beta3,\qquad b^B_0=-b^A_0=-\frac\beta3 .
+\]
+$B$ borrows and $A$ lends. $B$'s endowment rises from 1 to 2 at $t=1$, so
+$B$ borrows against that future income to consume more today.
+
+\textbf{Date 1.}
+\begin{align*}
+b^A_1&=y^A_1+(1+r_0)b^A_0-c^A_1\\
+&=1+\frac{3}{2\beta}\cdot\frac\beta3-\Big(\frac32-\frac\beta2\Big)\\
+&=1+\frac12-\frac32+\frac\beta2=\frac\beta2 .
+\end{align*}
+\textbf{Date $t\ge2$.} Suppose $b^A_{t-1}=\frac\beta2$. Then
+\begin{align*}
+b^A_t&=y^A_t+(1+r_{t-1})b^A_{t-1}-c^A_t\\
+&=1+\frac1\beta\cdot\frac\beta2-\Big(\frac32-\frac\beta2\Big)\\
+&=1+\frac12-\frac32+\frac\beta2=\frac\beta2 .
+\end{align*}
+\ans{b^A_0=\frac\beta3,\qquad b^A_t=\frac\beta2\ \ (t\ge1),\qquad b^B_t=-b^A_t}
+\textbf{NPG check.}
+\[
+\frac{b^A_T}{\prod_{\tau=0}^{T-1}(1+r_\tau)}=q_Tb^A_T=\frac23\beta^T\cdot\frac\beta2=\frac{\beta^{T+1}}{3}\longrightarrow0\quad(T\to\infty).
+\]
+The limit is $0\ge0$, so the NPG condition holds (with equality).
+
+\pt{f}
+With log utility, $p_t=\beta^t\frac{Y_0}{Y_t}$.
+\begin{align*}
+t=0:&\quad p_0=\beta^0\cdot\frac22=1=q_0,\\
+t\ge1:&\quad p_t=\beta^t\cdot\frac23=\frac23\beta^t=q_t .
+\end{align*}
+\ans{p_t=q_t\ \text{for all }t}
+In the sequential economy a household can move goods between any two dates
+by rolling over one-period bonds, at the relative price $q_t$. So its budget
+set is the same as with Arrow-Debreu date-0 trading at prices $p_t=q_t$,
+and it makes the same choices.
+
+% ================================================================= Q3
+\section*{Question 3}
+
+\pt{a}
+From the resource constraint, $c=Ak^\alpha-k'$.
+\[
+F(k,k')=\ln(Ak^\alpha-k').
+\]
+$k'\ge0$ and $c\ge0$, which means $k'\le Ak^\alpha$:
+\[
+\Gamma(k)=[0,\,Ak^\alpha].
+\]
+\ans{V(k)=\max_{k'\in[0,Ak^\alpha]}\big\{\ln(Ak^\alpha-k')+\beta V(k')\big\}}
+The state is $k$ and the control is $k'$.
+
+\pt{b}
+Define $(Tf)(k)=\max_{k'\in\Gamma(k)}\{\ln(Ak^\alpha-k')+\beta f(k')\}$.
+
+\textbf{Blackwell's sufficient conditions.} If $T$ satisfies
+\begin{enumerate}
+\item monotonicity: $f(k)\le g(k)$ for all $k$ implies $(Tf)(k)\le(Tg)(k)$ for all $k$,
+\item discounting: there is $\beta\in[0,1)$ such that $T(f+c)(k)\le(Tf)(k)+\beta c$ for every constant $c\ge0$ and all $k$,
+\end{enumerate}
+then $T$ is a contraction with modulus $\beta$.
+
+\textbf{Monotonicity.} Let $f\le g$. Since $\beta>0$, for every $k'\in\Gamma(k)$,
+\[
+\ln(Ak^\alpha-k')+\beta f(k')\le\ln(Ak^\alpha-k')+\beta g(k').
+\]
+Take the max over the same set $\Gamma(k)$ on both sides:
+\[
+(Tf)(k)=\max_{k'\in\Gamma(k)}\{\ln(Ak^\alpha-k')+\beta f(k')\}\le\max_{k'\in\Gamma(k)}\{\ln(Ak^\alpha-k')+\beta g(k')\}=(Tg)(k).
+\]
+\textbf{Discounting.} For a constant $c\ge0$,
+\begin{align*}
+T(f+c)(k)&=\max_{k'\in\Gamma(k)}\{\ln(Ak^\alpha-k')+\beta(f(k')+c)\}\\
+&=\max_{k'\in\Gamma(k)}\{\ln(Ak^\alpha-k')+\beta f(k')\}+\beta c\\
+&=(Tf)(k)+\beta c .
+\end{align*}
+$\beta c$ comes out of the max because it does not depend on $k'$. With
+$\beta<1$ this is the discounting condition.
+
+\textbf{Banach.} $T$ is a contraction. On a complete metric space (bounded
+continuous functions with $d(f,g)=\sup_k|f(k)-g(k)|$), Banach's theorem
+gives
+\begin{enumerate}
+\item a unique fixed point $V=TV$, which is the value function,
+\item convergence of value function iteration from any $V_0$:
+$d(T^nV_0,V)\le\beta\,d(T^{n-1}V_0,V)\le\dots\le\beta^nd(V_0,V)\to0$.
+\end{enumerate}
+\textbf{Log utility.} $\ln c\to-\infty$ as $c\to0$, so $F$ is unbounded and
+$V$ is not a bounded function. The theorem does not apply directly on the
+space of bounded functions. One has to restrict $k$ to a compact set
+bounded away from zero, or use a different norm.
+
+\pt{c}
+\textbf{Iteration 1.} With $V_0\equiv0$:
+\[
+V_1(k)=\max_{0\le k'\le Ak^\alpha}\ln(Ak^\alpha-k').
+\]
+$\ln(Ak^\alpha-k')$ is decreasing in $k'$, so the max is at $k'=0$:
+\[
+V_1(k)=\ln(Ak^\alpha)=\ln A+\alpha\ln k .
+\]
+\ans{V_1(k)=\ln A+\alpha\ln k,\qquad g_1(k)=0}
+\textbf{Iteration 2.}
+\[
+V_2(k)=\max_{k'}\big\{\ln(Ak^\alpha-k')+\beta(\ln A+\alpha\ln k')\big\}.
+\]
+FOC with respect to $k'$:
+\[
+-\frac{1}{Ak^\alpha-k'}+\frac{\alpha\beta}{k'}=0\quad\Longrightarrow\quad\frac{1}{Ak^\alpha-k'}=\frac{\alpha\beta}{k'}.
+\]
+Cross-multiply and solve:
+\begin{align*}
+k'&=\alpha\beta(Ak^\alpha-k')\\
+k'&=\alpha\beta Ak^\alpha-\alpha\beta k'\\
+k'+\alpha\beta k'&=\alpha\beta Ak^\alpha\\
+k'(1+\alpha\beta)&=\alpha\beta Ak^\alpha
+\end{align*}
+\ans{g_2(k)=\frac{\alpha\beta}{1+\alpha\beta}\,Ak^\alpha}
+\textbf{Interpretation.} $V_n$ is the value of the problem with $n$ periods
+left. $g_2$ is the optimal choice with two periods left: save some, knowing
+that everything will be eaten in the last period. It is the finite-horizon
+rule $k_T=\frac{\alpha\beta}{1+\alpha\beta}Ak_{T-1}^\alpha$. With
+$\alpha=0.3$, $\beta=0.95$ the saving rate is
+$\frac{0.285}{1.285}=0.222$.
+
+\pt{d}
+\textbf{Derivatives of $F$.} With $c=Ak^\alpha-k'$:
+\[
+F_1(k,k')=\frac{\alpha Ak^{\alpha-1}}{Ak^\alpha-k'},\qquad F_2(k,k')=-\frac{1}{Ak^\alpha-k'}.
+\]
+\textbf{FOC.} $F_2(k,k')+\beta V'(k')=0$:
+\[
+\frac{1}{Ak^\alpha-k'}=\beta V'(k').\tag{3}
+\]
+\textbf{Envelope.} With $k'=g(k)$, $V(k)=F(k,g(k))+\beta V(g(k))$.
+Differentiate:
+\begin{align*}
+V'(k)&=F_1(k,g(k))+F_2(k,g(k))g'(k)+\beta V'(g(k))g'(k)\\
+&=F_1(k,g(k))+g'(k)\big[F_2(k,g(k))+\beta V'(g(k))\big]\\
+&=F_1(k,g(k))\qquad\text{(bracket $=0$ by (3))}\\
+&=\frac{\alpha Ak^{\alpha-1}}{Ak^\alpha-g(k)}.
+\end{align*}
+Move forward one period:
+\[
+V'(g(k))=\frac{\alpha A\,g(k)^{\alpha-1}}{A\,g(k)^\alpha-g(g(k))}.
+\]
+\textbf{Functional Euler equation.} Substitute into (3):
+\[
+\frac{1}{Ak^\alpha-g(k)}=\beta\,\frac{\alpha A\,g(k)^{\alpha-1}}{A\,g(k)^\alpha-g(g(k))}.
+\]
+\textbf{Guess $g(k)=sAk^\alpha$.} Then $g(g(k))=sA\,g(k)^\alpha$.
+\begin{align*}
+\text{Left side:}&\quad\frac{1}{Ak^\alpha-sAk^\alpha}=\frac{1}{(1-s)Ak^\alpha}.\\
+\text{Right side:}&\quad\beta\,\frac{\alpha A\,g(k)^{\alpha-1}}{A\,g(k)^\alpha-sA\,g(k)^\alpha}=\beta\,\frac{\alpha A\,g(k)^{\alpha-1}}{(1-s)A\,g(k)^\alpha}=\frac{\alpha\beta}{(1-s)\,g(k)}=\frac{\alpha\beta}{(1-s)\,sAk^\alpha}.
+\end{align*}
+Set them equal:
+\[
+\frac{1}{(1-s)Ak^\alpha}=\frac{\alpha\beta}{(1-s)sAk^\alpha}.
+\]
+Multiply both sides by $(1-s)Ak^\alpha$:
+\[
+1=\frac{\alpha\beta}{s}\quad\Longrightarrow\quad s=\alpha\beta .
+\]
+$k$ cancels, so the guess works for every $k$.
+\ans{s=\alpha\beta,\qquad g(k)=\alpha\beta Ak^\alpha,\qquad c=(1-\alpha\beta)Ak^\alpha}
+
+\pt{e}
+At the steady state $k'=k=k^*$:
+\begin{align*}
+k^*&=\alpha\beta A(k^*)^\alpha\\
+(k^*)^{1-\alpha}&=\alpha\beta A\\
+k^*&=(\alpha\beta A)^{\frac{1}{1-\alpha}} .
+\end{align*}
+Numbers: $\alpha\beta A=0.3\times0.95\times1=0.285$ and
+$\frac{1}{1-\alpha}=\frac{1}{0.7}$.
+\ans{k^*=0.285^{1/0.7}=0.166}
+
+\pt{f}
+Take logs of the policy:
+\[
+\ln k_{t+1}=\ln(\alpha\beta A)+\alpha\ln k_t .
+\]
+At the steady state:
+\[
+\ln k^*=\ln(\alpha\beta A)+\alpha\ln k^* .
+\]
+Subtract the second equation from the first:
+\[
+\ln k_{t+1}-\ln k^*=\alpha(\ln k_t-\ln k^*)
+\]
+\ans{\hat k_{t+1}=\alpha\,\hat k_t}
+This is exact, because the policy is linear in logs.
+
+$k_0=k^*/2$ gives $\hat k_0=\ln\frac12=-0.693$. So
+\[
+\hat k_1=0.3\times(-0.693)=-0.208 .
+\]
+Iterating, $\hat k_n=\alpha^n\hat k_0$. Half the gap is closed when
+$\alpha^n=\frac12$:
+\[
+n=\frac{\ln0.5}{\ln0.3}=\frac{-0.693}{-1.204}=0.58\ \text{periods}.
+\]
+More than half the gap is closed in the first period.
+
+% ================================================================= Q4
+\section*{Question 4}
+
+\pt{a}
+Write the budget as $c_t+\frac{a_{t+1}}{1+r}=a_t+y_t$. Lagrangian:
+\[
+\mathcal L=\E_0\sum_{t=0}^\infty\beta^t\Big[u(c_t)+\lambda_t\Big(a_t+y_t-c_t-\frac{a_{t+1}}{1+r}\Big)\Big].
+\]
+FOC for $c_t$: $u'(c_t)=\lambda_t$.
+FOC for $a_{t+1}$:
+\[
+-\beta^t\frac{\lambda_t}{1+r}+\beta^{t+1}\E_t\lambda_{t+1}=0\quad\Longrightarrow\quad\lambda_t=\beta(1+r)\E_t\lambda_{t+1}.
+\]
+So $u'(c_t)=\beta(1+r)\E_tu'(c_{t+1})$. With $\beta(1+r)=1$:
+\[
+u'(c_t)=\E_tu'(c_{t+1}).
+\]
+With quadratic utility $u'(c)=b_1-b_2c$:
+\begin{align*}
+b_1-b_2c_t&=\E_t[b_1-b_2c_{t+1}]\\
+b_1-b_2c_t&=b_1-b_2\E_tc_{t+1}\\
+c_t&=\E_tc_{t+1}.
+\end{align*}
+\ans{c_t=\E_tc_{t+1}}
+
+\pt{b}
+From the budget:
+\[
+c_t=a_t+y_t-\frac{a_{t+1}}{1+r}.
+\]
+Write the same equation at $t+1$ and solve for $a_{t+1}$:
+\[
+a_{t+1}=c_{t+1}-y_{t+1}+\frac{a_{t+2}}{1+r}.
+\]
+Substitute:
+\begin{align*}
+c_t&=a_t+y_t-\frac{1}{1+r}\Big(c_{t+1}-y_{t+1}+\frac{a_{t+2}}{1+r}\Big)\\
+c_t+\frac{c_{t+1}}{1+r}&=a_t+y_t+\frac{y_{t+1}}{1+r}-\frac{a_{t+2}}{(1+r)^2}.
+\end{align*}
+Repeating $J$ times gives
+\[
+\sum_{j=0}^J\frac{c_{t+j}}{(1+r)^j}=a_t+\sum_{j=0}^J\frac{y_{t+j}}{(1+r)^j}-\frac{a_{t+J+1}}{(1+r)^{J+1}}.
+\]
+Take $\E_t$ and let $J\to\infty$. The last term goes to zero by the NPG
+condition and the TVC:
+\[
+\sum_{j=0}^\infty\frac{\E_tc_{t+j}}{(1+r)^j}=a_t+\sum_{j=0}^\infty\frac{\E_ty_{t+j}}{(1+r)^j}.
+\]
+By (a) and the law of iterated expectations,
+$\E_tc_{t+2}=\E_t[\E_{t+1}c_{t+2}]=\E_tc_{t+1}=c_t$, and in general
+$\E_tc_{t+j}=c_t$. The left side is
+\[
+c_t\sum_{j=0}^\infty\Big(\frac{1}{1+r}\Big)^j=c_t\cdot\frac{1}{1-\frac{1}{1+r}}=c_t\cdot\frac{1+r}{r}.
+\]
+So
+\[
+c_t\cdot\frac{1+r}{r}=a_t+\sum_{j=0}^\infty\frac{\E_ty_{t+j}}{(1+r)^j}
+\]
+\ans{c_t=\frac{r}{1+r}\Big[a_t+\sum_{j=0}^\infty\Big(\frac{1}{1+r}\Big)^j\E_ty_{t+j}\Big]}
+
+\pt{c}
+By (a), $c_{t-1}=\E_{t-1}c_t$, so
+\[
+\Delta c_t=c_t-c_{t-1}=c_t-\E_{t-1}c_t .
+\]
+Apply (b) at $t$ and take $\E_{t-1}$ of it. $a_t$ was chosen at $t-1$, so
+$\E_{t-1}a_t=a_t$ and it cancels:
+\[
+\Delta c_t=\frac{r}{1+r}\sum_{j=0}^\infty\frac{\E_ty_{t+j}-\E_{t-1}y_{t+j}}{(1+r)^j}.
+\]
+\textbf{Revision in expected income.} Iterating the AR(1):
+\[
+\E_ty_{t+j}-\bar y=\rho^j(y_t-\bar y),\qquad\E_{t-1}y_{t+j}-\bar y=\rho^{j+1}(y_{t-1}-\bar y).
+\]
+Subtract:
+\[
+\E_ty_{t+j}-\E_{t-1}y_{t+j}=\rho^j\big[(y_t-\bar y)-\rho(y_{t-1}-\bar y)\big]=\rho^j\varepsilon_t .
+\]
+\textbf{Sum.} $\frac{\rho}{1+r}<1$, so the geometric series converges:
+\begin{align*}
+\Delta c_t&=\frac{r}{1+r}\,\varepsilon_t\sum_{j=0}^\infty\Big(\frac{\rho}{1+r}\Big)^j\\
+&=\frac{r}{1+r}\cdot\frac{1}{1-\frac{\rho}{1+r}}\,\varepsilon_t\\
+&=\frac{r}{1+r}\cdot\frac{1+r}{1+r-\rho}\,\varepsilon_t
+\end{align*}
+\ans{\Delta c_t=\frac{r}{1+r-\rho}\,\varepsilon_t}
+\textbf{Numbers}, $r=0.04$:
+\begin{align*}
+\rho=0:&\quad\frac{0.04}{1.04}=0.038,\\
+\rho=0.9:&\quad\frac{0.04}{1.04-0.9}=\frac{0.04}{0.14}=0.286,\\
+\rho=1:&\quad\frac{0.04}{1.04-1}=\frac{0.04}{0.04}=1 .
+\end{align*}
+The more persistent the shock, the more consumption responds. A one-time
+shock raises consumption only by its annuity value (about $r$). A
+permanent shock raises consumption one for one.
+
+\pt{d}
+The model predicts a coefficient of zero. $\Delta c_{t+1}=c_{t+1}-\E_tc_{t+1}$
+is a rational-expectations forecast error, so it is uncorrelated with
+anything in the time-$t$ information set:
+\[
+\E_t[x_t\,\Delta c_{t+1}]=x_t\,\E_t[\Delta c_{t+1}]=0,\qquad\text{slope}=\frac{\mathrm{Cov}(\Delta c_{t+1},x_t)}{\mathrm{Var}(x_t)}=0 .
+\]
+So $H_0:\gamma=0$ in $\Delta c_{t+1}=\gamma x_t+\text{error}$.
+Johnson, Parker and Souleles (2006) used the 2001 tax rebates (\$300--600),
+whose timing was random and known in advance. The PIH says spending should
+not respond when the check arrives. They found households spent about
+20--30\% of the rebate in the quarter it arrived, which rejects the PIH
+(excess sensitivity).
+
+\pt{e}
+\textbf{Unconstrained rule.} Income is iid, so $\E_ty_{t+j}=\bar y$ for
+$j\ge1$. From (b):
+\begin{align*}
+c_t&=\frac{r}{1+r}\Big[a_t+y_t+\sum_{j=1}^\infty\frac{\bar y}{(1+r)^j}\Big]\\
+&=\frac{r}{1+r}\Big[a_t+y_t+\frac{\bar y}{r}\Big]\\
+&=\frac{r}{1+r}(a_t+y_t)+\frac{\bar y}{1+r}.
+\end{align*}
+using $\sum_{j=1}^\infty(1+r)^{-j}=\frac{1/(1+r)}{1-1/(1+r)}=\frac1r$.
+
+\textbf{Numbers.} $a_t=0$, $y_t=0.5$, $\bar y=1$, $r=0.04$:
+\[
+c_t=\frac{0.04}{1.04}(0+0.5)+\frac{1}{1.04}=0.0192+0.9615=0.981 .
+\]
+\textbf{Violation.}
+\[
+a_{t+1}=(1+r)(a_t+y_t-c_t)=1.04\times(0+0.5-0.981)=1.04\times(-0.481)=-0.500<0 .
+\]
+The rule asks the household to borrow, which $a_{t+1}\ge0$ rules out.
+
+\textbf{Euler equation with the constraint.} Add $\mu_t(a_{t+1}-0)$ to the
+Lagrangian in (a). The FOC for $a_{t+1}$ becomes
+\[
+-\beta^t\frac{\lambda_t}{1+r}+\beta^{t+1}\E_t\lambda_{t+1}+\beta^t\mu_t=0 .
+\]
+Divide by $\beta^t$, multiply by $1+r$, and use $\lambda=u'$:
+\ans{u'(c_t)=\beta(1+r)\E_tu'(c_{t+1})+(1+r)\mu_t,\qquad\mu_t\ge0,\quad\mu_ta_{t+1}=0}
+\textbf{Consumption and MPC.} The constraint binds, $a_{t+1}=0$, so
+$\mu_t>0$ and $u'(c_t)>\beta(1+r)\E_tu'(c_{t+1})$. From the budget:
+\[
+0=(1+r)(a_t+y_t-c_t)\quad\Longrightarrow\quad c_t=a_t+y_t=0+0.5=0.5 .
+\]
+\[
+\text{MPC}=\frac{\partial c_t}{\partial y_t}=1 .
+\]
+\ans{c_t=0.5,\qquad\text{MPC}=1}
+The unconstrained MPC out of a transitory shock would be
+$\frac{r}{1+r}=0.038$.
+
+\pt{f}
+With $\beta(1+r)=1$ the Euler equation is $u'(c_t)=\E_tu'(c_{t+1})$.
+Expand $u'(c_{t+1})$ to second order around $c_t$:
+\[
+u'(c_{t+1})\approx u'(c_t)+u''(c_t)(c_{t+1}-c_t)+\frac12u'''(c_t)(c_{t+1}-c_t)^2 .
+\]
+Take $\E_t$ and use $\E_tu'(c_{t+1})=u'(c_t)$:
+\[
+0=u''(c_t)\E_t[c_{t+1}-c_t]+\frac12u'''(c_t)\E_t[(c_{t+1}-c_t)^2].
+\]
+Solve for $\E_t[c_{t+1}-c_t]$ and divide by $c_t$:
+\[
+\E_t\Big[\frac{c_{t+1}-c_t}{c_t}\Big]=-\frac{u'''(c_t)\,c_t}{u''(c_t)}\cdot\frac12\,\E_t\Big[\Big(\frac{c_{t+1}-c_t}{c_t}\Big)^2\Big].
+\]
+For CRRA, $u''(c)=-\gamma c^{-\gamma-1}<0$ and
+$u'''(c)=\gamma(\gamma+1)c^{-\gamma-2}>0$, so
+\[
+-\frac{u'''(c)c}{u''(c)}=\frac{\gamma(\gamma+1)c^{-\gamma-2}\,c}{\gamma c^{-\gamma-1}}=\gamma+1>0 .
+\]
+Expected consumption growth is positive and increases with the variance of
+consumption growth. For given lifetime resources, a steeper expected path
+means lower consumption today, so the household saves more when income risk
+rises. With quadratic utility $u'''=0$ and this term is zero, which is why
+there was no precautionary saving in (a)--(c).
+
+Picture: $u'$ is convex when $u'''>0$, so by Jensen
+$\E_tu'(c_{t+1})>u'(\E_tc_{t+1})$. Then
+$u'(c_t)=\E_tu'(c_{t+1})>u'(\E_tc_{t+1})$, and since $u'$ is decreasing,
+$c_t<\E_tc_{t+1}$.
+
+\end{document}

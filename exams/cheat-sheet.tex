@@ -1,0 +1,265 @@
+% Macro I (ECO387C) midterm memorization sheet, Fall 2026. The exam is closed
+% book, so this is for drilling, not for bringing in. Two sides, letter
+% landscape. Side 1: measurement, endowment economy, uncertainty,
+% log-linearization. Side 2: dynamic programming, numerics, consumption.
+% Same build as the econometrics sheet: 12pt on tall narrow column pages,
+% then make-cheat-sheet.py shrinks each by SCALE and tiles 2 per side.
+% Everything here is derived in practice-packet.tex (Part numbers in brackets).
+\documentclass[12pt]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{xcolor}
+\usepackage[paperwidth=6.48in,paperheight=10in,margin=0.04in]{geometry}
+\DeclareMathSizes{12}{12}{8}{7}
+\DeclareMathSizes{10}{10}{8}{7}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1pt}
+\setlength{\abovedisplayskip}{2pt}
+\setlength{\belowdisplayskip}{2pt}
+\setlength{\abovedisplayshortskip}{1pt}
+\setlength{\belowdisplayshortskip}{1pt}
+\setlength{\jot}{1pt}
+\pagestyle{empty}
+\clubpenalty=10000
+\widowpenalty=10000
+\sloppy
+\setlength{\emergencystretch}{4em}
+\binoppenalty=100
+\relpenalty=50
+\newcommand{\E}{E}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+\newcommand{\qhd}[1]{\par\vspace{4pt}%
+  \colorbox{black!80}{\parbox{\dimexpr\linewidth-2\fboxsep}{\color{white}\bfseries #1}}\par\nopagebreak\vspace{2pt}}
+\newcommand{\hd}[1]{\par\vspace{3pt}%
+  \colorbox{black!12}{\parbox{\dimexpr\linewidth-2\fboxsep}{\bfseries #1}}\par\nopagebreak\vspace{1pt}}
+\newcommand{\sub}[1]{\textbf{#1} }
+\newcommand{\key}[1]{\fbox{$\displaystyle #1$}}
+
+\begin{document}
+\raggedbottom
+\setlength{\rightskip}{0pt plus 3em}
+
+% ============================ SIDE 1 ============================
+\qhd{A. MEASUREMENT AND BIG PICTURE}
+
+\hd{A.1 Macro (L1)}
+Aggregates $C_t=\sum_ic_{it}$, general equilibrium, dynamic, quantitative.
+History: Keynes, IS-LM (Hicks), Okun ($-2\%$ GDP $\leftrightarrow$ $+1$pt u),
+Phillips menu, Friedman-Phelps vertical LR PC, 70s stagflation, Lucas critique,
+RE, Kydland-Prescott RBC, New Keynesian (sticky prices $\Rightarrow$ money
+non-neutral), VARs $\mathbf Y_t=\alpha+B\mathbf Y_{t-1}+u_t$.\\
+\sub{Lucas critique.} $Y_t=\alpha+\delta(\tau)T_t(\tau)+\varepsilon_t$, $T_t=\tau Y_t$.
+Reduced-form $\delta$ moves with policy $\tau$, so old $\hat\delta$ gives wrong
+counterfactuals. Fix: model preferences/technology.
+
+\hd{A.2 National accounts (D1)}
+GDP = value of \emph{final} goods produced in a period. Three ways:
+value added $\sum[\text{output}-\text{intermediates}]$ (inventory counts);
+expenditure $Y=C+I+G+NX$ ($G$ excludes transfers, interest);
+income = factor payments + indirect taxes. $NI=GDP+NFP-D-NIT$.\\
+(B) $Y+TR+NFP+NTR=C+T+S$. (C) $T+\dot M+\dot B^G=G+TR$.
+(D) $X+NFP+NTR+CF=IM$.\\
+(E) Sub (A) into (B), cancel $C$, use (D):
+\key{I=S+(T-G-TR)+CF}. Closed, no gov: $S=I$.\\
+CPI overstates cost of living: quality bias, substitution bias.\\
+Examples: French tourist eats US burger $\Rightarrow$ US $NX\uparrow$, $Y\uparrow$;
+French $C\uparrow$, $IM\uparrow$, $Y$ same. Car made 2008 sold 2009: 2008 $I\uparrow$,
+2009 $C\uparrow$ $I\downarrow$.
+
+\qhd{B. ENDOWMENT ECONOMY (L2, D2, PS2)}
+
+\hd{B.1 Setup}
+$t=0..T$ ($T$ odd), types $e\in\{A,B\}$, masses $n^A,n^B$, $A$ gets $1,0,1,0..$,
+$B$ gets $0,1,0,1..$. $U=\sum\beta^t\ln c_t$, $\beta=1/(1+\rho)$.\\
+\sub{Nominal to real.} $p_tc_t+s_t\le p_ty_t+(1+i_{t-1})s_{t-1}$. Divide by $p_t$,
+$b_t=s_t/p_t$, $1+\pi_t=p_t/p_{t-1}$, $1+r_{t-1}=\frac{1+i_{t-1}}{1+\pi_t}$:
+\key{c_t+b_t\le y_t+(1+r_{t-1})b_{t-1}}, $b_{-1}=0$. Fisher $i_t\approx r_t+\pi_{t+1}$.\\
+\sub{Binds} since $u'>0$: slack $\Rightarrow$ raise $c_{\tilde t}$, contradiction.
+\sub{NPG (finite)} $b_T\ge0$.
+
+\hd{B.2 Competitive equilibrium}
+Prices $\{r_t\}$ and allocations $\{c^A_t,c^B_t,b^A_t,b^B_t\}$ s.t.
+(1) taking $\{r_t\}$ as given, allocations solve HH problems;
+(2) goods: $n^Ac^A_t+n^Bc^B_t=n^Ay^A_t+n^By^B_t$ $\forall t$;
+(3) bonds: $n^Ab^A_t+n^Bb^B_t=0$ $\forall t$.
+
+\hd{B.3 KKT}
+$\mathcal L=\sum\beta^t[\ln c_t+\lambda_t(y_t+(1+r_{t-1})b_{t-1}-c_t-b_t)]+\mu_Tb_T$.\\
+(1) $1/c_t=\lambda_t$. (2) $\lambda_t=\beta(1+r_t)\lambda_{t+1}$, $t<T$.
+(3) $\mu_T=\beta^T\lambda_T$. (4)-(5) constraints, (6)-(7) slackness,
+(8)-(9) $\lambda,\mu\ge0$. $\lambda>0\Rightarrow$ budget binds,
+$\mu_T>0\Rightarrow b_T=0$.
+\key{\frac{1}{c_t}=\beta(1+r_t)\frac{1}{c_{t+1}}}\\
+\sub{IBC.} $q_t=1/\prod_{\tau<t}(1+r_\tau)$, multiply budget by $q_t$, telescope:
+$\sum q_tc_t=\sum q_ty_t$.
+
+\hd{B.4 Equilibrium}
+Goods clearing + Euler: $Y_t=\frac{1}{\beta(1+r_t)}Y_{t+1}$, so
+\key{1+r_t=\frac1\beta\frac{Y_{t+1}}{Y_t}}.
+Alternating: $1+r_t=\frac{n^B}{\beta n^A}$ ($t$ even), $\frac{n^A}{\beta n^B}$ (odd).
+Scarce today $\Rightarrow$ high rate.\\
+$n=n^B/n^A$: $q_t=\beta^t$ (even), $\beta^t/n$ (odd).
+$\sum_{\rm even}\beta^t/\sum\beta^t=\frac{1}{1+\beta}$.\\
+$c^A_{ev}=\frac{1}{1+\beta}$, $c^A_{od}=\frac{n}{1+\beta}$,
+$c^B_{ev}=\frac{\beta}{n(1+\beta)}$, $c^B_{od}=\frac{\beta}{1+\beta}$.
+$n=1$: flat, $A$ eats more (endowment first).\\
+\sub{Two-period (D2).} $q=1/(1+r)$, $c_1+qc_2=y_1+qy_2$.
+$c_1=\frac{y_1+qy_2}{1+\beta}$, $c_2=\frac{\beta}{q}c_1$, $b=\frac{\beta y_1-qy_2}{1+\beta}$.
+Clearing: \key{q=\beta Y_1/Y_2}. Ex: $(3,1),(1,1)$, $\beta=.9$: $q=1.8$,
+$c^A=(2.526,1.263)$, $b^A=.474$.
+
+\qhd{C. INFINITE HORIZON, UNCERTAINTY}
+
+\hd{C.1 NPG and TVC}
+Ponzi: $b_t=-x\prod_{\tau<t}(1+r_\tau)$ rolls debt forever.\\
+NPG: \key{\lim_T\frac{b_T}{\prod_{\tau=0}^{T-1}(1+r_\tau)}\ge0}.
+TVC: $\lim\beta^T\lambda_Tb_T=0$. Iterate (2):
+$\lambda_t=\frac{\lambda_0}{\beta^t\prod_{\tau<t}(1+r_\tau)}$, plug in, divide by
+$\lambda_0$: NPG with $=$.
+
+\hd{C.2 Stochastic Euler}
+$y_t=\bar y+\varepsilon_t$. FOC $b_t$: $\lambda_t=\beta(1+r_t)E_t\lambda_{t+1}$
+($r_t$ known at $t$):
+\key{u'(c_t)=\beta(1+r_t)E_t[u'(c_{t+1})]}
+
+\hd{C.3 Identical agents (PS6)}
+Zero net supply $\Rightarrow b=0$, $c=y$:
+\key{R(y)=\frac{u'(y)}{\beta E[u'(y')|y]}}.
+Log, $\{2,1\}$, stay prob $p$: $R_h=\frac{1}{\beta(2-p)}$, $R_l=\frac{2}{\beta(1+p)}$,
+$R_h<\frac1\beta<R_l$. iid $\frac12$: $R(2)=\frac{2}{3\beta}$, $R(1)=\frac{4}{3\beta}$.
+Boom $\Rightarrow$ want to save $\Rightarrow R$ low.
+Bellman $V(b,y)=\max_{a'}\{u(b+y-a')+\beta E[V(R(y)a',y')|y]\}$, $b=R_{t-1}a_t$.
+
+\qhd{D. LOG-LINEARIZATION (D3, PS3)}
+
+$\hat x=\frac{x-\bar x}{\bar x}\approx\ln x-\ln\bar x$, $x\approx\bar xe^{\hat x}$.\\
+\sub{Methods.} (1) sub $\bar xe^{\hat x}$, divide by SS, take logs. (2) Taylor in
+levels, divide by $\bar Y$. (3) take logs, total differential, $dx/\bar x=\hat x$.
+$Y=AK^\alpha N^{1-\alpha}$: $\hat Y=\hat A+\alpha\hat K+(1-\alpha)\hat N$.\\
+\sub{Rules.} $cx\to\hat x$. $x^a\to a\hat x$. $xz\to\hat x+\hat z$.
+$x/z\to\hat x-\hat z$. $x\pm z\to\frac{\bar x}{\bar y}\hat x\pm\frac{\bar z}{\bar y}\hat z$.\\
+$Y=C+I$: $\hat Y=\frac{\bar C}{\bar Y}\hat C+\frac{\bar I}{\bar Y}\hat I$.
+$K'=(1-\delta)K+I$: $\hat K'=(1-\delta)\hat K+\delta\hat I$ ($\bar I=\delta\bar K$).
+CRRA Euler: $\hat C_{t+1}-\hat C_t=\frac1\gamma\hat R_t$.
+
+\hd{D.1 Working (1960)}
+$x_{t+1}=\frac{c_{t+1}+c_t}2$ every other period, $c$ random walk.
+$u_{t+1}=x_{t+1}-x_{t-1}=\frac12[\varepsilon_{t+1}+2\varepsilon_t+\varepsilon_{t-1}]$.
+$\Var u=\frac32\sigma^2$, $\Cov(u_{t+1},u_{t-1})=\frac14\sigma^2$, \key{\rho_1=\tfrac16}.
+$\Cov(u_{t+1},u_{t-3})=0$: skip one observation.
+
+\newpage
+% ============================ SIDE 2 ============================
+\qhd{E. DYNAMIC PROGRAMMING (L3, D4)}
+
+\hd{E.1 Problems 1 and 2}
+P1: $\max\sum\beta^t\hat F(y_t)$, $x_{t+1}=h(x_t,y_t)\in\Gamma(x_t)$
+($x$ state, $y$ control). Invert $y_t=\hat h(x_t,x_{t+1})$,
+$F(x,x')=\hat F(\hat h(x,x'))$. P2: $\max\sum\beta^tF(x_t,x_{t+1})$.\\
+\key{F_2(x_t,x_{t+1})+\beta F_1(x_{t+1},x_{t+2})=0}
+TVC $\lim\beta^TF_1(x_T,x_{T+1})x_T=0$.\\
+\sub{Growth.} $c+k'=f(k)+(1-\delta)k$, $\Gamma(k)=[0,f(k)+(1-\delta)k]$,
+$F=u(f(k)+(1-\delta)k-k')$, $F_1=u'(f'+1-\delta)$, $F_2=-u'$:
+$u'(c_t)=\beta u'(c_{t+1})(f'(k_{t+1})+1-\delta)$.
+SS: $k^*=\big(\frac{\alpha}{1/\beta-1+\delta}\big)^{1/(1-\alpha)}$; $\delta=1$: $(\alpha\beta)^{1/(1-\alpha)}$.
+
+\hd{E.2 Bellman}
+$V(x_0)=\max\{F(x_0,x_1)+\beta\sum_{t\ge1}\beta^{t-1}F\}$, max in steps,
+reindex inner sum $=V(x_1)$:
+\key{V(x)=\max_{x'\in\Gamma(x)}\{F(x,x')+\beta V(x')\}}
+$g(x)=\arg\max$, $V(x)=F(x,g(x))+\beta V(g(x))$. Principle of optimality.\\
+\sub{Properties.} $F$ incr.\ in 1st arg + $\Gamma$ monotone $\Rightarrow V$ strictly incr.
+$F$ jointly strictly concave + $\Gamma$ convex $\Rightarrow V$ strictly concave, unique $g$.
+
+\hd{E.3 Contraction}
+Metric: $d=0$ iff equal, symmetric, triangle. Sup norm $d(f,g)=\sup|f-g|$.
+Contraction mod $\beta\in[0,1)$: $d(Tf,Tg)\le\beta d(f,g)$.\\
+\sub{Banach.} Complete space + contraction $\Rightarrow$ unique $f^*=Tf^*$,
+$d(Tf_0,f^*)\le\beta d(f_0,f^*)$.\\
+\sub{Blackwell.} Monotone ($f\le g\Rightarrow Tf\le Tg$) + discounting
+($T(f+k)\le Tf+\beta k$) $\Rightarrow$ contraction.\\
+Verify: $F+\beta f\le F+\beta g$ pointwise, max preserves. $T(f+k)=\max\{F+\beta f\}+\beta k$
+(constant leaves the max).\\
+VFI: $d(T^nV_0,V)\le\beta^nd(V_0,V)\to0$. Unbounded $F$ (log, $k^\alpha$): completeness may fail.
+
+\hd{E.4 Envelope route (FOC, envelope, shift, sub)}
+FOC $F_2(x,x')+\beta V'(x')=0$. Envelope $V'(x)=F_1(x,g(x))$ (bracket $=0$ by FOC).
+\key{F_2(x,g(x))+\beta F_1(g(x),g(g(x)))=0}
+\sub{Stochastic (L3).} $V(a,y)=\max_{a'}\{u(a+y-\frac{a'}{1+r})+\beta E[V(a',y')|y]\}$,
+FOC $\frac{u'(c)}{1+r}=\beta E[V_a(a',y')|y]$, envelope $V_a=u'(c)$:
+$u'(c)=\beta(1+r)\sum_{y'}P(y'|y)u'(c')$.
+
+\hd{E.5 Closed forms ($\ln$, $\delta=1$, $k^\alpha$)}
+Guess $E+F\ln k$: FOC $k'=\frac{\beta F}{1+\beta F}k^\alpha$; match $\ln k$:
+$F=\alpha(1+\beta F)$:
+\key{F=\frac{\alpha}{1-\alpha\beta},\ k'=\alpha\beta k^\alpha,\ c=(1-\alpha\beta)k^\alpha}
+$E=\frac{1}{1-\beta}\big[\ln(1-\alpha\beta)+\frac{\alpha\beta}{1-\alpha\beta}\ln(\alpha\beta)\big]$.
+Use $1+\beta F=\frac{1}{1-\alpha\beta}$.\\
+VFI from 0: $V_1=\alpha\ln k$, $b_{n+1}=\alpha(1+\beta b_n)$,
+$b_n=\alpha\frac{1-(\alpha\beta)^n}{1-\alpha\beta}$, saving rate $\frac{\beta b_n}{1+\beta b_n}\to\alpha\beta$.\\
+\sub{Cake (CRRA $\gamma$).} $c_{t+1}=\theta c_t$, $\theta=\beta^{1/\gamma}$,
+$c=(1-\theta)g$, $V=u(g)(1-\theta)^{-\gamma}$ (since $\beta\theta^{1-\gamma}=\theta$).
+
+\qhd{F. NUMERICAL DP (D5, D6, PS4-5)}
+
+\hd{F.1 VFI on a grid}
+Grid $A$ with $a_1=a_{\min}$, $V_0=0$,
+$V_{j+1}(a,y)=\max_{a'\in A}\{u(y+a-\frac{a'}{1+r})+\beta\sum_{y'}p(y')V_j(a',y')\}$,
+$c<0\Rightarrow-\infty$. Stop at $\max|V_{j+1}-V_j|<$tol. Approximation,
+optimization (grid search), integration (weighted sum). Slow but robust.
+
+\hd{F.2 AR(1) $z'=(1-\rho)\bar z+\rho z+\sigma\varepsilon$}
+$\sigma_z^2=\frac{\sigma^2}{1-\rho^2}$.\\
+\sub{Tauchen.} $N$ points on $\bar z\pm m\sigma_z$, $w=\frac{2m\sigma_z}{N-1}$, $\mu_j=(1-\rho)\bar z+\rho z_j$.
+$p_{j1}=\Phi\big(\frac{z_1+w/2-\mu_j}{\sigma}\big)$,
+$p_{j\ell}=\Phi\big(\frac{z_\ell+w/2-\mu_j}{\sigma}\big)-\Phi\big(\frac{z_\ell-w/2-\mu_j}{\sigma}\big)$,
+$p_{jN}=1-\Phi\big(\frac{z_N-w/2-\mu_j}{\sigma}\big)$.\\
+\sub{Rouwenhorst.} $\bar z\pm v$, $v=\sigma_z\sqrt{N-1}$, $P_2=\begin{pmatrix}p&1-p\\1-q&q\end{pmatrix}$,
+$P_n=p[P,0;0',0]+(1-p)[0,P;0,0']+(1-q)[0',0;P,0]+q[0,0';0,P]$, halve middle rows.
+$p+q-1=\rho$, $p=q=\frac{1+\rho}{2}$. Matches mean, var, autocorr. Use for $\rho>0.9$.
+$P_3$ rows: $(p^2,2p(1-p),(1-p)^2)$, $(p(1-q),pq+(1-p)(1-q),q(1-p))$, $((1-q)^2,2q(1-q),q^2)$.
+Stationary $(\frac14,\frac12,\frac14)$ when $p=q$.
+
+\qhd{G. CONSUMPTION (L4)}
+
+\hd{G.1 PIH, IES}
+$c_t+\frac{a_{t+1}}{1+r_t}=y_t+a_t$, NPG.
+$u'(c_t)=\beta(1+r_t)u'(c_{t+1})$. $\beta(1+r)=1\Rightarrow c$ flat.\\
+$u=\frac{c^{1-1/\sigma}}{1-1/\sigma}$: \key{\frac{c_{t+1}}{c_t}=[\beta(1+r_t)]^\sigma},
+$\frac{\partial\ln(c_{t+1}/c_t)}{\partial\ln(1+r)}=\sigma$ = IES, $1/\sigma$ = RRA,
+$\sigma\in[.1,.5]$. Grows iff $r>\rho$.
+
+\hd{G.2 MPC}
+$c_{t+j}=(R\beta)^{\sigma j}c_t$ into IBC:
+\key{c_t=(1-R^{-1}(R\beta)^\sigma)\big[a_t+\textstyle\sum_jR^{-j}y_{t+j}\big]}
+Transitory: $1-\frac1R=\frac{r}{1+r}\approx r$. Permanent: $\frac{r}{1+r}\cdot\frac{1+r}{r}=1$.
+MPC depends on persistence (Friedman 1957).
+
+\hd{G.3 RE errors, Hall}
+$\varepsilon_{t+1}=s_{t+1}-E_ts_{t+1}$: $E_t\varepsilon=0$;
+$E_t[x\varepsilon]=0$ for $x\in I_t$; regression slope $=E[E_t(\varepsilon x)]/\Var x=0$.\\
+$u'(c_{t+1})\approx u'(c_t)+\varepsilon_{t+1}$; Taylor $u'(c_t)\approx u'(c)+u''(c)c(\ln c_t-\ln c)$:
+\key{\ln c_{t+1}=\ln c_t+\eta_{t+1},\ \eta=\tfrac{\varepsilon}{cu''(c)}}
+Test $\ln c_{t+1}=\ln c_t+\gamma x_t+\eta$, $H_0:\gamma=0$.
+Shea 95 (union wages) rejects. JPS 2006 rebates $\$300$-$600$: $\Delta c=\beta R_{i,t}+\dots$,
+PIH $\beta=0$ (anticipated), $\hat\beta\approx.2$-$.3$. Kaplan-Violante 2014.
+
+\hd{G.4 Precautionary}
+$\beta(1+r)=1$, 2nd-order Taylor of $u'(c_{t+1})$ at $c_t$, take $E_t$:
+\key{E_t\tfrac{\Delta c}{c}=-\tfrac{u'''c}{u''}\cdot\tfrac12E_t\big[(\tfrac{\Delta c}{c})^2\big]}
+$>0$ iff $u'''>0$ (prudence, Kimball 1990). Quadratic: $u'''=0$, none.
+CRRA: prudence $1+\frac1\sigma$. Jensen: $u'$ convex $\Rightarrow$
+$u'(c_t)=E u'(c')>u'(Ec')\Rightarrow c_t<E_tc_{t+1}$.
+Log, sd 5\%: $\approx2\cdot\frac12\cdot.0025=0.25\%$.
+
+\hd{G.5 Borrowing constraints}
+$a_{t+1}\ge\underline a$. Natural (repay with $c=0$ forever, $y_{\min}$):
+\key{a_{t+1}\ge-\tfrac{1+r}{r}y_{\min}}\\
+KKT: \key{u'(c_t)=\beta(1+r)E_tu'(c_{t+1})+(1+r)\mu_t}
+$\mu_t\ge0$, $\mu_t(a_{t+1}-\underline a)=0$. Binding: $c_t=y_t+a_t-\frac{\underline a}{1+r}$,
+mpc $=1$ (HANK). $\beta(1+r)=1$: $u'(c_t)\ge E_tu'(c_{t+1})$, supermartingale,
+$c,a\to\infty$ (self-insurance). Quadratic: $c_t\le E_tc_{t+1}$, isolates the
+constraint motive from prudence.\\
+Ex: $\beta=1,r=0$, $y=(1,3)$, no borrowing: $c=(1,3)$, $\mu=1-\frac13=\frac23$, mpc 1.
+
+\end{document}
